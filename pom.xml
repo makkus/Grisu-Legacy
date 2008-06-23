@@ -14,16 +14,16 @@
   		<grisu.version>0.2-beta-SNAPSHOT</grisu.version>
 	</properties>
 	
-<!--	<modules>-->
-<!--		<module>../grisu-commons</module>-->
-<!--		<module>../grisu-client</module>-->
-<!--		<module>../grisu-client-swing</module>-->
-<!--		<module>../grisu-client-commandline</module>-->
-<!--		<module>../grisu-core</module>-->
-<!--		<module>../grisu-ws</module>-->
-<!--		<module>../grisu-local</module>-->
-<!--		<module>../grisu-batch</module>-->
-<!--	</modules> -->
+	<modules>
+		<module>../grisu-commons</module>
+		<module>../grisu-client</module>
+		<module>../grisu-client-swing</module>
+		<module>../grisu-client-commandline</module>
+		<module>../grisu-core</module>
+		<module>../grisu-ws</module>
+		<module>../grisu-local</module>
+		<module>../grisu-batch</module>
+	</modules> 
 
 	<repositories>
 		<repository>

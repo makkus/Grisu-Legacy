@@ -1,0 +1,18 @@
+---++ What can the Grid do for Underworld? 
+
+Running simulations of the above-mentioned models is an expensive process.
+Current generation models require solving systems of several million
+unknowns over 100+ timesteps. This necessitates running large parallel
+jobs - using 64 processors, a medium-large model run takes in excess of ten hours. But as well as this compute-time expense, there is the time
+spent setting up, monitoring, and post-processing batch jobs on supercomputers.
+
+Grid computing offers the potential to launch, monitor, and post-process
+many compute jobs simultaneously, all from a graphical user interface or
+web portal. Clearly, Underworld researchers could benefit from these
+capabilities. Specifically, the core needs for an Underworld grid service
+can be described as:
+
+ * submitting underworld jobs to the grid
+ * staging in input files from either the desktop, or remote sources such as the shared directory of a user's VO
+ * monitoring and managing running jobs - including viewing intermediate results
+ * staging out output files to the desktop/home directory of a user's site/shared directories of their VO(s)

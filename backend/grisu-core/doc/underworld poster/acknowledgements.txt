@@ -1,0 +1,7 @@
+StgUnderworld is developed by Monash Cluster Computing and the Victorian Partnership for Advanced Computing (VPAC) as part of the NCRIS AuScope infrastructure project, and was previously supported by the ACcESS MNRF and APAC CT&T project. We would like to thank:
+
+* the CSIRO APAC Grid Geoscience Support Project for their support of the grid, especially Ryan Fraser and Robert Woodcock
+* APAC for their support of Grisu
+* additional Grisu beta-testers, including Jay Stafford and Julian Giordani (Monash University) and Mike Kuiper (VPAC)
+* system administrators who have assisted in installing Underworld modules on clusters on the APAC grid, including Margaret Kahn (APAC), Brett Pemberton and Andy Botting (VPAC)
+* Monash University Science Faculty IT staff who have helped deal with firewall issues, in particular Paul Blaich.

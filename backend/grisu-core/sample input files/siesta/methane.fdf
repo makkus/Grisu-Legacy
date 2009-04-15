@@ -1,0 +1,37 @@
+# #
+
+SystemLabel      methane
+
+NumberOfAtoms    5
+
+NumberOfSpecies  2
+%block ChemicalSpeciesLabel
+    1    1  H
+    2    6  C
+%endblock ChemicalSpeciesLabel
+
+AtomicCoordinatesFormat NotScaledCartesianAng
+%block AtomicCoordinatesAndAtomicSpecies
+     2.223228550     7.713090680    75.404282610    1
+     2.401487140     8.658942670    73.845804560    1
+     2.195810090     6.840538440    73.787518160    1
+     2.572612080     7.701550630    74.285318900    2
+     3.677356890     7.549429870    73.916763290    1
+%endblock AtomicCoordinatesAndAtomicSpecies
+
+XC.Functional  LDA
+XC.Authors  CA
+PAO.EnergyShift  0.02 Ry
+DM.NumberPulay  3
+SolutionMethod  diagon
+MD.TypeOfRun  CG
+MD.VariableCell  false
+MD.NumCGSteps  100
+MD.MaxForceTol  0.02 eV/Ang
+MeshCutoff  150 Ry
+LongOutput  true
+WriteCoorStep  True
+
+# --- unparsed ---
+MD.UseSaveXV true
+

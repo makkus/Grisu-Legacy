@@ -1,0 +1,221 @@
+BLASTX 2.2.19 [Nov-02-2008]
+
+
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+"Gapped BLAST and PSI-BLAST: a new generation of protein database search
+programs",  Nucleic Acids Res. 25:3389-3402.
+
+Query= gi|1681491|gb|AA123456.1|AA123456 mp94a07.r1
+Soares_thymus_2NbMT Mus musculus cDNA clone IMAGE:576852 5', mRNA
+sequence.
+         (529 letters)
+
+Database: nr 
+           7,912,770 sequences; 2,726,631,503 total letters
+
+Searching..................................................done
+
+
+
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+gb|EDL23267.1| mCG141134, isoform CRA_e [Mus musculus]                 92   2e-17
+gb|EDL23263.1| mCG141134, isoform CRA_a [Mus musculus]                 52   2e-05
+gb|EDL23266.1| mCG141134, isoform CRA_d [Mus musculus]                 52   3e-05
+ref|XP_541329.2| PREDICTED: similar to FYVE, RhoGEF and PH domai...    35   2.7  
+ref|ZP_03265651.1| glycoside hydrolase family 28 [Burkholderia s...    34   6.1  
+ref|XP_001776968.1| predicted protein [Physcomitrella patens sub...    33   7.8  
+ref|XP_001779060.1| predicted protein [Physcomitrella patens sub...    33   7.8  
+gb|EEE70078.1| hypothetical protein OsJ_30069 [Oryza sativa Japo...    33   7.9  
+ref|NP_001048876.1| Os03g0133500 [Oryza sativa (japonica cultiva...    33   7.9  
+gb|AAN05508.1| Putative AMP-binding protein [Oryza sativa (japon...    33   7.9  
+
+>gb|EDL23267.1| mCG141134, isoform CRA_e [Mus musculus]
+          Length = 135
+
+ Score = 92.0 bits (227), Expect = 2e-17
+ Identities = 40/40 (100%), Positives = 40/40 (100%)
+ Frame = +1
+
+Query: 16  DHPAFWALPPWLTGSLVIPSQVRRNWALIHVLSPGEGMDP 135
+           DHPAFWALPPWLTGSLVIPSQVRRNWALIHVLSPGEGMDP
+Sbjct: 96  DHPAFWALPPWLTGSLVIPSQVRRNWALIHVLSPGEGMDP 135
+
+
+>gb|EDL23263.1| mCG141134, isoform CRA_a [Mus musculus]
+          Length = 128
+
+ Score = 52.0 bits (123), Expect = 2e-05
+ Identities = 21/22 (95%), Positives = 22/22 (100%)
+ Frame = +1
+
+Query: 16  DHPAFWALPPWLTGSLVIPSQV 81
+           DHPAFWALPPWLTGSLVIPSQ+
+Sbjct: 96  DHPAFWALPPWLTGSLVIPSQL 117
+
+
+>gb|EDL23266.1| mCG141134, isoform CRA_d [Mus musculus]
+          Length = 122
+
+ Score = 51.6 bits (122), Expect = 3e-05
+ Identities = 21/21 (100%), Positives = 21/21 (100%)
+ Frame = +1
+
+Query: 16  DHPAFWALPPWLTGSLVIPSQ 78
+           DHPAFWALPPWLTGSLVIPSQ
+Sbjct: 96  DHPAFWALPPWLTGSLVIPSQ 116
+
+
+>ref|XP_541329.2| PREDICTED: similar to FYVE, RhoGEF and PH domain containing protein
+           3 (Zinc finger FYVE domain containing protein 5) [Canis
+           familiaris]
+          Length = 735
+
+ Score = 35.0 bits (79), Expect = 2.7
+ Identities = 18/37 (48%), Positives = 19/37 (51%)
+ Frame = -1
+
+Query: 130 PSLLQGLKHESGPNFSSPDLGSPGFPLAMGGGPRRLG 20
+           P  LQGL      +   PDLGSPG P   G GP  LG
+Sbjct: 36  PGKLQGLPLGPRAHGKDPDLGSPGTPTTSGDGPLDLG 72
+
+
+>ref|ZP_03265651.1| glycoside hydrolase family 28 [Burkholderia sp. H160]
+ gb|EEA02768.1| glycoside hydrolase family 28 [Burkholderia sp. H160]
+          Length = 876
+
+ Score = 33.9 bits (76), Expect = 6.1
+ Identities = 15/43 (34%), Positives = 25/43 (58%)
+ Frame = -1
+
+Query: 370 HSYCSFSLNLAMPSHFGLGSVPFRASIMENIYFYTQIKTDLGV 242
+           HSY    L++  P++ G+ ++ F  +  +NIY  T   TD+GV
+Sbjct: 604 HSYNGHGLSIGSPTNAGVRNIHFYDNYFDNIYDGTNSSTDMGV 646
+
+
+>ref|XP_001776968.1| predicted protein [Physcomitrella patens subsp. patens]
+ gb|EDQ58217.1| predicted protein [Physcomitrella patens subsp. patens]
+          Length = 344
+
+ Score = 33.5 bits (75), Expect = 7.8
+ Identities = 24/65 (36%), Positives = 31/65 (47%), Gaps = 1/65 (1%)
+ Frame = -3
+
+Query: 338 YALSLWSW*CPI*SLYNGEHLFL-HTNKDRPRS*SGRKVTF*QHRISKRLIYDPSFRYTQ 162
+           +AL +WS  C +  LY+G+ LF  HTN D  R     K  F +  + K    D  F   Q
+Sbjct: 208 HALDIWSVGCCLYELYSGKMLFPGHTNNDMLRLHMELKGRFPKKMLRKAQFLDQHF--DQ 265
+
+Query: 161 SLGFC 147
+            L FC
+Sbjct: 266 DLNFC 270
+
+
+>ref|XP_001779060.1| predicted protein [Physcomitrella patens subsp. patens]
+ gb|EDQ56097.1| predicted protein [Physcomitrella patens subsp. patens]
+          Length = 573
+
+ Score = 33.5 bits (75), Expect = 7.8
+ Identities = 24/65 (36%), Positives = 31/65 (47%), Gaps = 1/65 (1%)
+ Frame = -3
+
+Query: 338 YALSLWSW*CPI*SLYNGEHLFL-HTNKDRPRS*SGRKVTF*QHRISKRLIYDPSFRYTQ 162
+           +AL +WS  C +  LY+G+ LF  HTN D  R     K  F +  + K    D  F   Q
+Sbjct: 434 HALDIWSVGCCLYELYSGKMLFPGHTNNDMLRLHMELKGPFPKKMLKKAQFKDQHF--DQ 491
+
+Query: 161 SLGFC 147
+            L FC
+Sbjct: 492 DLNFC 496
+
+
+>gb|EEE70078.1| hypothetical protein OsJ_30069 [Oryza sativa Japonica Group]
+          Length = 492
+
+ Score = 33.5 bits (75), Expect = 7.9
+ Identities = 17/62 (27%), Positives = 29/62 (46%), Gaps = 6/62 (9%)
+ Frame = +1
+
+Query: 115 PGEGMDP*RLK------QKPRDCVYLNEGSYINRLEIRCCQNVTFLPD*LLGLSLFVCRN 276
+           P +  DP  L        +P+  +Y + G+Y+N L    C ++T +P  L  + +F C  
+Sbjct: 177 PADERDPISLNYTSGTTSRPKGVIYSHRGAYLNSLAALLCNDMTSMPVYLWTVPMFHCNG 236
+
+Query: 277 KC 282
+            C
+Sbjct: 237 WC 238
+
+
+>ref|NP_001048876.1| Os03g0133500 [Oryza sativa (japonica cultivar-group)]
+ gb|ABF93834.1| AMP-dependent synthetase and ligase family protein, putative,
+           expressed [Oryza sativa (japonica cultivar-group)]
+ dbj|BAF10790.1| Os03g0133500 [Oryza sativa (japonica cultivar-group)]
+ dbj|BAG89956.1| unnamed protein product [Oryza sativa Japonica Group]
+ gb|EEC74454.1| hypothetical protein OsI_09874 [Oryza sativa Indica Group]
+          Length = 550
+
+ Score = 33.5 bits (75), Expect = 7.9
+ Identities = 17/62 (27%), Positives = 29/62 (46%), Gaps = 6/62 (9%)
+ Frame = +1
+
+Query: 115 PGEGMDP*RLK------QKPRDCVYLNEGSYINRLEIRCCQNVTFLPD*LLGLSLFVCRN 276
+           P +  DP  L        +P+  +Y + G+Y+N L    C ++T +P  L  + +F C  
+Sbjct: 177 PADERDPISLNYTSGTTSRPKGVIYSHRGAYLNSLAALLCNDMTSMPVYLWTVPMFHCNG 236
+
+Query: 277 KC 282
+            C
+Sbjct: 237 WC 238
+
+
+>gb|AAN05508.1| Putative AMP-binding protein [Oryza sativa (japonica
+           cultivar-group)]
+          Length = 561
+
+ Score = 33.5 bits (75), Expect = 7.9
+ Identities = 17/62 (27%), Positives = 29/62 (46%), Gaps = 6/62 (9%)
+ Frame = +1
+
+Query: 115 PGEGMDP*RLK------QKPRDCVYLNEGSYINRLEIRCCQNVTFLPD*LLGLSLFVCRN 276
+           P +  DP  L        +P+  +Y + G+Y+N L    C ++T +P  L  + +F C  
+Sbjct: 188 PADERDPISLNYTSGTTSRPKGVIYSHRGAYLNSLAALLCNDMTSMPVYLWTVPMFHCNG 247
+
+Query: 277 KC 282
+            C
+Sbjct: 248 WC 249
+
+
+  Database: nr
+    Posted date:  Feb 24, 2009  5:56 PM
+  Number of letters in database: 2,726,631,503
+  Number of sequences in database:  7,912,770
+  
+Lambda     K      H
+   0.318    0.134    0.401 
+
+Gapped
+Lambda     K      H
+   0.267   0.0410    0.140 
+
+
+Matrix: BLOSUM62
+Gap Penalties: Existence: 11, Extension: 1
+Number of Sequences: 7912770
+Number of Hits to DB: 2,797,536,952
+Number of extensions: 65130627
+Number of successful extensions: 145818
+Number of sequences better than 10.0: 10
+Number of HSP's gapped: 145574
+Number of HSP's successfully gapped: 10
+Length of query: 176
+Length of database: 2,726,631,503
+Length adjustment: 126
+Effective length of query: 50
+Effective length of database: 1,729,622,483
+Effective search space: 86481124150
+Effective search space used: 86481124150
+Neighboring words threshold: 12
+Window for multiple hits: 40
+X1: 16 ( 7.3 bits)
+X2: 38 (14.6 bits)
+X3: 64 (24.7 bits)
+S1: 41 (21.7 bits)
+S2: 30 (16.2 bits)

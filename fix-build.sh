@@ -32,7 +32,7 @@ cd ..
 # fix commandline frontend
 mkdir cmdline
 cd cmdline
-unzip -o ../grisu-$VERSIONgricli.jar
+unzip -o ../grisu-${VERSION}gricli.jar
 #rm ../grisu-${VERSION}gricli.jar
 #rm -f META-INF/INDEX.LIST
 cp ../../frontend/gricli/src/main/resources/log4j.properties .

@@ -9,13 +9,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.net.URL;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -34,8 +32,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.jfree.ui.about.AboutDialog;
-import org.jfree.ui.about.ProjectInfo;
 import org.vpac.grisu.client.control.EnvironmentManager;
 import org.vpac.grisu.client.control.files.FileManagerDeleteHelpers;
 import org.vpac.grisu.client.control.files.FileManagerTransferHelpers;
@@ -50,8 +46,11 @@ import org.vpac.grisu.client.view.swing.login.LoginSplashScreen;
 import org.vpac.grisu.client.view.swing.mountpoints.MountPointsManagementDialog;
 import org.vpac.grisu.client.view.swing.template.SubmissionPanel;
 import org.vpac.grisu.client.view.swing.utils.Utils;
+import org.vpac.grisu.control.Environment;
 import org.vpac.grisu.control.GrisuRegistry;
 import org.vpac.grisu.control.ServiceInterface;
+import org.vpac.grisu.control.utils.GrisuPluginFilenameFilter;
+import org.vpac.grisu.js.model.utils.ClasspathHacker;
 import org.vpac.helpDesk.control.HelpDeskManager;
 import org.vpac.helpDesk.model.HelpDesk;
 import org.vpac.helpDesk.model.HelpDeskNotAvailableException;
@@ -719,6 +718,27 @@ public class Grisu implements WindowListener {
 		
 	}
 
+	
+	private void addPluginsToClasspath() {
+		
+		
+		
+		File pluginFolder = new File(Environment.GRISU_PLUGIN_DIRECTORY);
+		
+		File[] plugins = pluginFolder.listFiles(new GrisuPluginFilenameFilter());
+
+		for ( File plugin : plugins ) {
+			
+			try {
+				ClasspathHacker.addFile(plugin);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	
+	}
 	
 	
 }

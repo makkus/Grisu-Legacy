@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -44,6 +46,7 @@ import org.vpac.grisu.client.view.swing.login.LoginSplashScreen;
 import org.vpac.grisu.client.view.swing.mountpoints.MountPointsManagementDialog;
 import org.vpac.grisu.client.view.swing.template.SubmissionPanel;
 import org.vpac.grisu.client.view.swing.utils.Utils;
+import org.vpac.grisu.control.Environment;
 import org.vpac.grisu.control.GrisuRegistry;
 import org.vpac.grisu.control.ServiceInterface;
 import org.vpac.grisu.control.utils.ClasspathHacker;
@@ -715,6 +718,27 @@ public class Grisu implements WindowListener {
 		
 	}
 
+	
+	private void addPluginsToClasspath() {
+		
+		
+		
+		File pluginFolder = new File(Environment.GRISU_PLUGIN_DIRECTORY);
+		
+		File[] plugins = pluginFolder.listFiles(new GrisuPluginFilenameFilter());
+
+		for ( File plugin : plugins ) {
+			
+			try {
+				ClasspathHacker.addFile(plugin);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	
+	}
 	
 	
 }

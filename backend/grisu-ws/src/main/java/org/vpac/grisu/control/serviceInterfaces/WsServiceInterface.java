@@ -104,8 +104,12 @@ public class WsServiceInterface extends AbstractServiceInterface implements
 	// only destroys the session. maybe I should do more here?
 	public String logout() {
 
+		try {
 		myLogger.debug("Exiting...");
 		this.credential.destroy();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 

@@ -36,8 +36,7 @@ unzip -o ../grisu-${VERSION}gricli.jar
 #rm ../grisu-${VERSION}gricli.jar
 #rm -f META-INF/INDEX.LIST
 cp ../../frontend/gricli/src/main/resources/log4j.properties .
-cp ../../frontend/gricli/MANIFEST.MF META-INF/
-jar -cf  ../gricli.jar .
+jar cmf  ../../frontend/gricli/MANIFEST.MF ../gricli.jar .
 cd ..
 #jar -i grisu-client.jar
 

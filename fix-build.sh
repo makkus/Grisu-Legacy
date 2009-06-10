@@ -34,7 +34,7 @@ mkdir cmdline
 cd cmdline
 unzip -o ../grisu-${VERSION}gricli.jar
 #rm ../grisu-${VERSION}gricli.jar
-#rm -f META-INF/INDEX.LIST
+rm -f META-INF/INDEX.LIST
 cp ../../frontend/gricli/src/main/resources/log4j.properties .
 jar cmf  ../../frontend/gricli/MANIFEST.MF ../gricli.jar .
 cd ..

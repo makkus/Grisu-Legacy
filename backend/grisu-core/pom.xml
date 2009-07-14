@@ -3,13 +3,13 @@
   <parent>
     <artifactId>backend</artifactId>
     <groupId>org.vpac.grisu</groupId>
-    <version>0.2</version>
+    <version>0.2.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.vpac.grisu</groupId>
   <artifactId>grisu-core</artifactId>
   <name>grisu-core</name>
-  <version>0.2</version>
+  <version>0.2.1</version>
   <description>grisu-core is the main module of the Grisu framework. It manages
 		all the data/jobs/VOs of a user. It is able
 		to controls/submits/deletes jobs for the user. It manages file
@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>org.vpac.grisu</groupId>
 			<artifactId>grisu-commons</artifactId>
-			<version>0.2</version>
+			<version>0.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>au.org.arcs.auth</groupId>
@@ -260,9 +260,9 @@
 			<version>0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>au.edu.apac.common-grid-libs</groupId>
+			<groupId>external.grisu-core</groupId>
 			<artifactId>commons-vfs-grid</artifactId>
-			<version>1.1.1-SNAPSHOT</version>
+			<version>1.4.3-TEMP</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>

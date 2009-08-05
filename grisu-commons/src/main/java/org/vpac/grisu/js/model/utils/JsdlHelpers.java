@@ -1089,13 +1089,13 @@ public class JsdlHelpers {
 	 */
 	public static String getJobType(Document jsdl) {
 
-		String expression = "/jsdl:JobDefinition/jsdl:JobDescription/jsdl:Application/jsdl-posix:POSIXApplication/jsdl-posix:JobType";
+		String expression = "/jsdl:JobDefinition/jsdl:JobDescription/jsdl-arcs:JobType";
 		NodeList resultNodes = null;
 		try {
 			resultNodes = (NodeList) xpath.evaluate(expression, jsdl,
 					XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
-			myLogger.warn("No jobtype in jsdl file.");
+			myLogger.warn("No output in jsdl file.");
 			return null;
 		}
 

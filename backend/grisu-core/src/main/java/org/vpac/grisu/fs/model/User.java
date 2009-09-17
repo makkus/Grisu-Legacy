@@ -44,6 +44,26 @@ import uk.ac.dl.escience.vfs.util.VFSUtil;
  * 
  */
 public class User {
+	
+	// to get on filesystemmanager per thread
+	  private static class ThreadLocalFsManager extends ThreadLocal {
+		    public Object initialValue() {
+		    try {
+		    	myLogger.debug("Creating new FS Manager.");
+				return VFSUtil.createNewFsManager(false, false, true, true, true, true, true, null);
+			} catch (FileSystemException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+
+		    }
+
+		    public DefaultFileSystemManager getFsManager() { 
+		      return (DefaultFileSystemManager) super.get(); 
+		    }
+		  }
+
+	  private ThreadLocalFsManager threadLocalFsManager = new ThreadLocalFsManager();
 
 	private static Logger myLogger = Logger.getLogger(User.class.getName());
 	
@@ -515,9 +535,9 @@ public class User {
 //	}
 	
 	private DefaultFileSystemManager getFsManager() throws FileSystemException {
-		if (fsmanager == null) {
+//		if (fsmanager == null) {
 			
-			fsmanager = VFSUtil.createNewFsManager(false, false, true, true, true, true, true, null);
+//			fsmanager = VFSUtil.createNewFsManager(false, false, true, true, true, true, true, null);
 //			fsmanager = VFSUtil.createNewFsManager(false, false, true, true, true, true, null);
 //			fsmanager = new DefaultFileSystemManager();
 			// FileSystemManager fsmanager = VFS.getManager();
@@ -532,8 +552,11 @@ public class User {
 
 //			getFsManager().init();
 
-		}
-		return fsmanager;
+//		}
+//		return fsmanager;
+		
+		return threadLocalFsManager.getFsManager();
+		
 	}
 
 

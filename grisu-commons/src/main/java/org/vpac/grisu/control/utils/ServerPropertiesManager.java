@@ -23,6 +23,8 @@ public class ServerPropertiesManager {
 	public static final int DEFAULT_MYPROXY_LIFETIME_IN_SECONDS = 3600;
 	public static final int DEFAULT_MIN_PROXY_LIFETIME_BEFORE_REFRESH = 600;
 	public static final String DEFAULT_JOB_DIR_NAME = "grisu-local-job-dir";
+	
+	private static final int DEFAULT_CONCURRENT_JOB_SUBMISSION_RETRIES = 5;
 
 	public static PropertiesConfiguration config = null;
 
@@ -175,6 +177,23 @@ public class ServerPropertiesManager {
 			return DEFAULT_MIN_PROXY_LIFETIME_BEFORE_REFRESH;
 		
 		return lifetime_in_seconds;
+	}
+	
+	public static int getJobSubmissionRetries() {
+		
+		int retries = -1;
+		try {
+			retries = Integer.parseInt(getServerConfiguration()
+					.getString("globusJobSubmissionRetries"));
+
+		} catch (Exception e) {
+			// myLogger.error("Problem with config file: " + e.getMessage());
+			return DEFAULT_CONCURRENT_JOB_SUBMISSION_RETRIES;
+		}
+		if (retries == -1) {
+			return DEFAULT_CONCURRENT_JOB_SUBMISSION_RETRIES;
+		}
+		return retries;
 	}
 
 }

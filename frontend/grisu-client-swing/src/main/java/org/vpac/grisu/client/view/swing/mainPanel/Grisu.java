@@ -52,6 +52,8 @@ import org.vpac.helpDesk.model.HelpDeskNotAvailableException;
 import org.vpac.helpDesk.view.TicketSubmissionDialogMultipleHelpdesks;
 import org.vpac.security.light.control.CertificateFiles;
 
+import au.org.arcs.auth.shibboleth.Shibboleth;
+
 
 public class Grisu implements WindowListener {
 
@@ -563,6 +565,8 @@ public class Grisu implements WindowListener {
 			Level lvl = Level.toLevel("debug");
 			Logger.getRootLogger().setLevel(lvl);
 		} 
+		
+		Shibboleth.initDefaultSecurityProvider();
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

@@ -71,7 +71,7 @@ public class CertHelpers {
 	 * @return the voms proxy
 	 * @throws VomsException if the communication with the voms server fails for some reason
 	 */
-	public static ProxyCredential getVOProxyCredential(VO vo, String fqan, ProxyCredential credToConnect) throws VomsException {
+	public static ProxyCredential getVOProxyCredential(VO vo, String fqan, ProxyCredential credToConnect) {
 		
 		VomsProxyCredential vomsGssCred = null;
 		try {
@@ -85,14 +85,14 @@ public class CertHelpers {
 			myLogger.debug("Created voms proxy for fqan: "+fqan+" with lifetime: "+vomsGssCred.getVomsProxy().getTimeLeft());
 			
 		} catch (Exception e) {
-			throw new VomsException("Could not retrieve VomsProxyCredential for fqan \""+fqan+"\": "+e.getMessage());
+			throw new RuntimeException("Could not retrieve VomsProxyCredential for fqan \""+fqan+"\": "+e.getMessage());
 		}
 		
 		ProxyCredential vomsProxyCred = null;
 		try {
 			vomsProxyCred = new ProxyCredential(CredentialHelpers.wrapGlobusCredential(vomsGssCred.getVomsProxy()), fqan);
 		} catch (Exception e) {
-			throw new VomsException("Could not retrieve VomsProxyCredential for fqan \""+fqan+"\": "+e.getMessage());
+			throw new RuntimeException("Could not retrieve VomsProxyCredential for fqan \""+fqan+"\": "+e.getMessage());
 		}
 		
 		return vomsProxyCred;

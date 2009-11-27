@@ -22,8 +22,8 @@
 	</property>
 	<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
 
-	<mapping resource="FileReservation.hbm.xml" />
-	<mapping resource="FileTransfer.hbm.xml" />
+<!--	<mapping resource="FileReservation.hbm.xml" />-->
+<!--	<mapping resource="FileTransfer.hbm.xml" />-->
 	<mapping resource="Job.hbm.xml" />
 	<mapping resource="User.hbm.xml" />
 	<mapping resource="ProxyCredential.hbm.xml" />

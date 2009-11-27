@@ -48,6 +48,7 @@ public class HttpProxyPanel extends JPanel implements ItemListener {
 	public HttpProxyPanel() {
 		super();
 		initialize();
+		HttpProxyManager.setDefaultHttpProxy();
 	}
 
 	/**

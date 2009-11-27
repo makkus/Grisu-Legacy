@@ -2,12 +2,10 @@
   <parent>
     <artifactId>frontend</artifactId>
     <groupId>org.vpac.grisu</groupId>
-    <version>0.2.1</version>
+    <version>0.2.2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.vpac.grisu</groupId>
   <artifactId>grisu-client</artifactId>
-  <version>0.2.1</version>
   
   <repositories>
   	<repository>
@@ -36,7 +34,7 @@
 		<dependency>
 			<groupId>org.vpac.grisu</groupId>
 			<artifactId>grisu-commons</artifactId>
-			<version>0.2.1</version>
+			<version>0.2.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

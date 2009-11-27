@@ -663,17 +663,39 @@ abstract class AbstractServiceInterface implements ServiceInterface {
 
 		for (String fqan : getFqans()) {
 			Date start = new Date();
-			Map<String, String[]> mpUrl = getDataLocationsForVO(fqan);
+			Map<String, String[]> mpUrl = informationManager
+					.getDataLocationsForVO(fqan);
 			Date end = new Date();
 			myLogger.debug("Querying for data locations for all sites and+ "
 					+ fqan + " took: " + (end.getTime() - start.getTime())
 					+ " ms.");
 			for (String server : mpUrl.keySet()) {
 				for (String path : mpUrl.get(server)) {
+
+					String url = null;
+					if (path.contains("${GLOBUS_USER_HOME}")) {
+
+						try {
+							url = getUser().getFileSystemHomeDirectory(
+									server.replace(":2811", ""), fqan);
+						} catch (FileSystemException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					} else {
+
+						url = server.replace(":2811", "") + path + "/"
+								+ User.get_vo_dn_path(getCredential().getDn());
+
+					}
+
+					if (url == null || "".equals(url)) {
+						continue;
+					}
+
 					MountPoint mp = new MountPoint(getUser().getDn(), fqan,
-							server.replace(":2811", "") + path + "/"
-									+ User.GET_VO_DN_PATH(getCredential().getDn()),
-							calculateMountPointName(server, fqan), true);
+							url, calculateMountPointName(server, fqan), true);
 					// + "." + fqan + "." + path);
 					// + "." + fqan);
 					mps.add(mp);

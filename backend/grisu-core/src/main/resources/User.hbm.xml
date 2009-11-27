@@ -25,17 +25,17 @@
 <!--    		<element column="vo" type="string" not-null="true"/>-->
 <!--		</map>		-->
 
-		<list name="fileTransfers" cascade="all-delete-orphan" inverse="true">
-			<key column="user_id" not-null="true"/>
-			<list-index column="user_index"/>
-			<one-to-many class="org.vpac.grisu.fs.model.FileTransfer"/>
-		</list>		
-
-		<list name="fileReservations" cascade="all-delete-orphan" inverse="true">
-			<key column="user_id" not-null="true"/>
-			<list-index column="user_index"/>
-			<one-to-many class="org.vpac.grisu.fs.model.FileReservation"/>
-		</list>		
+<!--		<list name="fileTransfers" cascade="all-delete-orphan" inverse="true">-->
+<!--			<key column="user_id" not-null="true"/>-->
+<!--			<list-index column="user_index"/>-->
+<!--			<one-to-many class="org.vpac.grisu.fs.model.FileTransfer"/>-->
+<!--		</list>		-->
+<!---->
+<!--		<list name="fileReservations" cascade="all-delete-orphan" inverse="true">-->
+<!--			<key column="user_id" not-null="true"/>-->
+<!--			<list-index column="user_index"/>-->
+<!--			<one-to-many class="org.vpac.grisu.fs.model.FileReservation"/>-->
+<!--		</list>		-->
 
 		
 	</class>

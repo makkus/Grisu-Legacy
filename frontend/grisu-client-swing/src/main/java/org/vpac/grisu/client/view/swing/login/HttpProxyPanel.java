@@ -171,7 +171,7 @@ public class HttpProxyPanel extends JPanel implements ItemListener {
 			});
 			try {
 				// set proxy server from last time
-				String httpProxyServer = (String)ClientPropertiesManager.getClientConfiguration().getProperty("httpProxyServer");
+				String httpProxyServer = HttpProxyManager.lastTimeHttpProxyHost();
 				if ( httpProxyServer != null && !"".equals(httpProxyServer) )
 					serverTextField.setText(httpProxyServer);
 			} catch (Exception e) {
@@ -197,7 +197,7 @@ public class HttpProxyPanel extends JPanel implements ItemListener {
 //			});
 			try {
 				// set proxy server from last time
-				String httpProxyPort = (String)ClientPropertiesManager.getClientConfiguration().getProperty("httpProxyPort");
+				String httpProxyPort = HttpProxyManager.lastTimeHttpProxyPort().toString();
 				if ( httpProxyPort != null && !"".equals(httpProxyPort) )
 					portTextField.setText(httpProxyPort);
 			} catch (Exception e) {
@@ -222,7 +222,7 @@ public class HttpProxyPanel extends JPanel implements ItemListener {
 			});
 			try {
 				// set proxy server from last time
-				String httpProxyUsername = (String)ClientPropertiesManager.getClientConfiguration().getProperty("httpProxyUsername");
+				String httpProxyUsername = HttpProxyManager.lastTimeHttpProxyAuthUsername();
 				if ( httpProxyUsername != null && !"".equals(httpProxyUsername) )
 					usernameTextField.setText(httpProxyUsername);
 			} catch (Exception e) {

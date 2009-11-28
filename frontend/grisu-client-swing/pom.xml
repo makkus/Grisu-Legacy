@@ -11,12 +11,12 @@
 	<artifactId>grisu-client-swing</artifactId>
 	<name>grisu-client-swing</name>
 	
-	<repositories>
-		<repository>
-			<id>vpac</id>
-			<url>http://hudson.vpac.org/maven_repository</url>
-		</repository>
-	</repositories>
+<!--	<repositories>-->
+<!--		<repository>-->
+<!--			<id>vpac</id>-->
+<!--			<url>http://hudson.vpac.org/maven_repository</url>-->
+<!--		</repository>-->
+<!--	</repositories>-->
 
 	<dependencies>
 		<dependency>

@@ -19,13 +19,13 @@
 		support to access this web service.
 	</description>
 		
-	<repositories>
-		<repository>
-			<id>vpac</id>
-			<url>http://hudson.vpac.org/maven_repository
-			</url>
-		</repository>
-	</repositories>
+<!--	<repositories>-->
+<!--		<repository>-->
+<!--			<id>vpac</id>-->
+<!--			<url>http://hudson.vpac.org/maven_repository-->
+<!--			</url>-->
+<!--		</repository>-->
+<!--	</repositories>-->
 	<dependencies>
 		<dependency>
 			<groupId>org.codehaus.xfire</groupId>

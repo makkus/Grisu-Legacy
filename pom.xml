@@ -10,12 +10,25 @@
 	<description>Grisu is an open source framework to help grid admins and developers to support end users in a grid environment. Grisu publishes an easy-to-use service interface which by default sits behind a web service. This service interface contains a set of methods that are usually needed to submit jobs to the grid, including providing information about the grid and the staging of input/output files from/to the users desktop. </description>
 	<url>http://maven.apache.org</url>
 
-	<repositories>
+<!--	<repositories>-->
+<!--		<repository>-->
+<!--			<id>vpac</id>-->
+<!--			<url>http://hudson.vpac.org/maven_repository</url>-->
+<!--		</repository>-->
+<!--	</repositories>-->
+
+  <repositories>
 		<repository>
-			<id>vpac</id>
-			<url>http://hudson.vpac.org/maven_repository</url>
+			<id>ARCS</id>
+			<url>http://code.arcs.org.au/nexus/content/groups/public</url>
+		</repository>
+		<repository>
+			<id>ARCS Snapshots</id>
+			<url>http://code.arcs.org.au/nexus/content/groups/public-snapshots</url>
 		</repository>
 	</repositories>
+
+
 	<issueManagement>
 		<system>Trac</system>
 		<url>http://projects.arcs.org.au/trac/grisu/</url>

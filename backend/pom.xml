@@ -10,13 +10,13 @@
 	<packaging>pom</packaging>
 	<name>backends Maven Multi Project</name>
 	<url>http://maven.apache.org</url>
-	<repositories>
-		<repository>
-			<id>vpac</id>
-			<url>http://hudson.vpac.org/maven_repository
-			</url>
-		</repository>
-	</repositories>
+<!--	<repositories>-->
+<!--		<repository>-->
+<!--			<id>vpac</id>-->
+<!--			<url>http://hudson.vpac.org/maven_repository-->
+<!--			</url>-->
+<!--		</repository>-->
+<!--	</repositories>-->
 	<modules>
 		<module>grisu-core</module>
 		<module>grisu-ws</module>

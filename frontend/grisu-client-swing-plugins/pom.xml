@@ -8,12 +8,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>grisu-client-swing-plugins</artifactId>
 
-	<repositories>
-		<repository>
-			<id>vpac</id>
-			<url>http://hudson.vpac.org/maven_repository</url>
-		</repository>
-	</repositories>
+<!--	<repositories>-->
+<!--		<repository>-->
+<!--			<id>vpac</id>-->
+<!--			<url>http://hudson.vpac.org/maven_repository</url>-->
+<!--		</repository>-->
+<!--	</repositories>-->
 
 	<dependencies>
 		<dependency>

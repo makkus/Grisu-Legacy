@@ -23,9 +23,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 
-import org.apache.commons.configuration.ConfigurationException;
+//import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
-import org.vpac.grisu.client.control.utils.ClientPropertiesManager;
+//import org.vpac.grisu.client.control.utils.ClientPropertiesManager;
 
 import au.org.arcs.jcommons.utils.HttpProxyManager;
 
@@ -138,22 +138,22 @@ public class HttpProxyPanel extends JPanel implements ItemListener {
 		add(getButton(), gbc);
 		
 		boolean show;
-		try {
-			show = "true".equals(ClientPropertiesManager.getClientConfiguration().getProperty("httpProxy"));
+//		try {
+			show = StringUtils.isNotBlank(HttpProxyManager.lastTimeHttpProxyHost());
 			if ( show ) {
 				getAdvancedCheckBox().setSelected(true);
 			}
 			showHttpProxy(show);
-		} catch (ConfigurationException e) {
-			getProxyPasswordField().setVisible(false);
-			getUsernameTextField().setVisible(false);
-			getServerTextField().setVisible(false);
-			getPortTextField().setVisible(false);
-			jLabel.setVisible(false);
-			jLabel1.setVisible(false);
-			jLabel2.setVisible(false);
-			jLabel3.setVisible(false);
-		}
+//		} catch (ConfigurationException e) {
+//			getProxyPasswordField().setVisible(false);
+//			getUsernameTextField().setVisible(false);
+//			getServerTextField().setVisible(false);
+//			getPortTextField().setVisible(false);
+//			jLabel.setVisible(false);
+//			jLabel1.setVisible(false);
+//			jLabel2.setVisible(false);
+//			jLabel3.setVisible(false);
+//		}
 	}
 
 	/**

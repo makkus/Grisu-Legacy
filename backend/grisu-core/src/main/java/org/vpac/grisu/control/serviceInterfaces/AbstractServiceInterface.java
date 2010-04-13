@@ -683,6 +683,13 @@ abstract class AbstractServiceInterface implements ServiceInterface {
 							e.printStackTrace();
 						}
 
+					} else  if  ( path.contains("${GLOBUS_SCRATCH_DIR") ) {
+						try {
+							url = getUser().getFileSystemHomeDirectory(
+									server.replace(":2811", ""), fqan)+"/.globus/scratch";
+						} catch (FileSystemException e) {
+							e.printStackTrace();
+						}
 					} else {
 
 						url = server.replace(":2811", "") + path + "/"

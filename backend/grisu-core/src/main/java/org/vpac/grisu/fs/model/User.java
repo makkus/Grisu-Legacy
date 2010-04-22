@@ -514,6 +514,9 @@ public class User {
 
 		FileSystemOptions opts = new FileSystemOptions();
 
+		// just to make sure
+		getFsManager();
+		
 		if (rootUrl.startsWith("gsiftp")) {
 			GridFtpFileSystemConfigBuilder builder = GridFtpFileSystemConfigBuilder
 					.getInstance();

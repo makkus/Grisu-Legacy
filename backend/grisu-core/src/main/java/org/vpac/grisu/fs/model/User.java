@@ -4,6 +4,8 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -46,12 +48,16 @@ import uk.ac.dl.escience.vfs.util.VFSUtil;
  */
 public class User {
 	
+	public List<DefaultFileSystemManager> allFileSystems = Collections.synchronizedList(new LinkedList<DefaultFileSystemManager>());
+	
 	// to get on filesystemmanager per thread
-	  private static class ThreadLocalFsManager extends ThreadLocal {
+	  private class ThreadLocalFsManager extends ThreadLocal {
 		    public Object initialValue() {
 		    try {
 		    	myLogger.debug("Creating new FS Manager.");
-				return VFSUtil.createNewFsManager(false, false, true, true, true, true, true, null);
+				DefaultFileSystemManager temp = VFSUtil.createNewFsManager(false, false, true, true, true, true, true, null);
+				allFileSystems.add(temp);
+				return temp;
 			} catch (FileSystemException e) {
 				e.printStackTrace();
 				throw new RuntimeException(e);
@@ -116,6 +122,12 @@ public class User {
 	public User() {
 	}
 
+	public void closeAllFileSystems() {
+		for ( DefaultFileSystemManager fsm : allFileSystems ) {
+			fsm.close();
+		}
+	}
+	
 	/**
 	 * Constructs a User object not using an associated credential.
 	 * 

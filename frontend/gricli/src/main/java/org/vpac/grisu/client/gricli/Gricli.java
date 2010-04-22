@@ -195,6 +195,7 @@ public class Gricli implements FileTransferListener {
 			System.exit(1);
 		}
 
+		try {
 		String mode = clientProperties.getMode();
 		if (GrisuClientCommandlineProperties.SUBMIT_MODE_PARAMETER.equals(mode)) {
 			try {
@@ -229,6 +230,24 @@ public class Gricli implements FileTransferListener {
 			forced_all_mode = true;
 			executeWholeJobsubmissionCycle();
 			
+		}
+		
+		} catch (Exception e) {
+			
+			if ( e instanceof ExecutionException ) {
+				throw (ExecutionException)e;
+			} else {
+				throw new ExecutionException(e);
+			}
+			
+		} finally {
+			try {
+				if ( serviceInterface != null ) {
+					serviceInterface.logout();
+				}
+			} catch (Exception e) {
+				System.err.println(e.getLocalizedMessage());
+			}
 		}
 
 	}

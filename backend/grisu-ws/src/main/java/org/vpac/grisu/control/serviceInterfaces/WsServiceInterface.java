@@ -105,12 +105,17 @@ public class WsServiceInterface extends AbstractServiceInterface implements
 	public String logout() {
 
 		try {
-		myLogger.debug("Exiting...");
-		this.credential.destroy();
+			myLogger.debug("Exiting...");
+			
+			getUser().closeAllFileSystems();
+			
+			if ( this.credential != null ) {
+				this.credential.destroy();
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			myLogger.error(e.getLocalizedMessage(), e);
 		}
-		return null;
+		return "logged out";
 	}
 
 

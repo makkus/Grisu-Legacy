@@ -6,6 +6,7 @@ import java.io.File;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.vpac.grisu.client.control.ServiceInterfaceFactory;
 import org.vpac.grisu.control.Environment;
@@ -263,11 +264,15 @@ public class ClientPropertiesManager {
 
 	public static String getLastUsedFqan() { 
 		String fqan = null;
+		fqan = System.getProperty("grisu.defaultFqan");
+		
+		if ( StringUtils.isBlank(fqan) ) {
 		try {
 			fqan = (String) (getClientConfiguration()
 					.getProperty("lastUsedFqan"));
 		} catch (ConfigurationException e) {
 //			myLogger.debug("Problem with config file: " + e.getMessage());
+		}
 		}
 		return fqan;
 	}

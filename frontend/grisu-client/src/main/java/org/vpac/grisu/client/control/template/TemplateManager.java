@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.vpac.grisu.client.control.EnvironmentManager;
 import org.vpac.grisu.client.control.ServiceInterfaceFactory;
@@ -64,6 +65,12 @@ public class TemplateManager {
 		}
 		
 		//localTemplates = LocalTemplateManagement.getAllTemplatesWithFilenames(em);
+		
+		// check whether to autoload a template based on environment variable
+		String defaultApplication = System.getProperty("grisu.defaultApplication");
+		if ( StringUtils.isNotBlank(defaultApplication) ) {
+			addServerTemplate(defaultApplication);
+		}
 	}
 	
 	public Map<String, JsdlTemplate> getLocalTemplates() {

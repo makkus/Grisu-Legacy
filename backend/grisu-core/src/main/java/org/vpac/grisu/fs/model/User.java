@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,15 +46,17 @@ import uk.ac.dl.escience.vfs.util.VFSUtil;
  * 
  */
 public class User {
-	
-	public List<DefaultFileSystemManager> allFileSystems = Collections.synchronizedList(new LinkedList<DefaultFileSystemManager>());
-	
+
+	public List<DefaultFileSystemManager> allFileSystems = Collections
+			.synchronizedList(new LinkedList<DefaultFileSystemManager>());
+
 	// to get on filesystemmanager per thread
-	  private class ThreadLocalFsManager extends ThreadLocal {
-		    public Object initialValue() {
-		    try {
-		    	myLogger.debug("Creating new FS Manager.");
-				DefaultFileSystemManager temp = VFSUtil.createNewFsManager(false, false, true, true, true, true, true, null);
+	private class ThreadLocalFsManager extends ThreadLocal {
+		public Object initialValue() {
+			try {
+				myLogger.debug("Creating new FS Manager.");
+				DefaultFileSystemManager temp = VFSUtil.createNewFsManager(
+						false, false, true, true, true, true, true, null);
 				allFileSystems.add(temp);
 				return temp;
 			} catch (FileSystemException e) {
@@ -63,14 +64,14 @@ public class User {
 				throw new RuntimeException(e);
 			}
 
-		    }
+		}
 
-		    public DefaultFileSystemManager getFsManager() { 
-		      return (DefaultFileSystemManager) super.get(); 
-		    }
-		  }
+		public DefaultFileSystemManager getFsManager() {
+			return (DefaultFileSystemManager) super.get();
+		}
+	}
 
-	  private ThreadLocalFsManager threadLocalFsManager = new ThreadLocalFsManager();
+	private ThreadLocalFsManager threadLocalFsManager = new ThreadLocalFsManager();
 
 	private static Logger myLogger = Logger.getLogger(User.class.getName());
 
@@ -91,11 +92,10 @@ public class User {
 
 	// // persistent properties
 	// // not used yet
-	 private List<FileTransfer> fileTransfers = new ArrayList<FileTransfer>();
+	private List<FileTransfer> fileTransfers = new ArrayList<FileTransfer>();
 
 	// // not used yet
-	 private List<FileReservation> fileReservations = new
-	 ArrayList<FileReservation>();
+	private List<FileReservation> fileReservations = new ArrayList<FileReservation>();
 
 	// the mountpoints of a user
 	private Set<MountPoint> mountPoints = new HashSet<MountPoint>();
@@ -104,7 +104,8 @@ public class User {
 
 	// filesystem connections are cached so that we don't need to connect again
 	// everytime we access one
-//	private Map<MountPoint, FileSystem> cachedFilesystemConnections = new HashMap<MountPoint, FileSystem>();
+	// private Map<MountPoint, FileSystem> cachedFilesystemConnections = new
+	// HashMap<MountPoint, FileSystem>();
 	// credentials are chache so we don't have to contact myproxy/voms anytime
 	// we want to make a transaction
 	private Map<String, ProxyCredential> cachedCredentials = new HashMap<String, ProxyCredential>();
@@ -115,19 +116,20 @@ public class User {
 	// private Map<String, String> fqans = null;
 
 	private Map<String, List<String>> userProperties = new HashMap<String, List<String>>();
-	
-//	private Map<String, JobSubmissionObjectImpl> jobTemplates = new HashMap<String, JobSubmissionObjectImpl>();
+
+	// private Map<String, JobSubmissionObjectImpl> jobTemplates = new
+	// HashMap<String, JobSubmissionObjectImpl>();
 
 	// for hibernate
 	public User() {
 	}
 
 	public void closeAllFileSystems() {
-		for ( DefaultFileSystemManager fsm : allFileSystems ) {
+		for (DefaultFileSystemManager fsm : allFileSystems) {
 			fsm.close();
 		}
 	}
-	
+
 	/**
 	 * Constructs a User object not using an associated credential.
 	 * 
@@ -314,20 +316,21 @@ public class User {
 	private void setMountPoints(final Set<MountPoint> mountPoints) {
 		this.mountPoints = mountPoints;
 	}
-	
-	public String getFileSystemHomeDirectory(String filesystemRoot, String fqan) throws FileSystemException {
-		
+
+	public String getFileSystemHomeDirectory(String filesystemRoot, String fqan)
+			throws FileSystemException {
+
 		FileSystem fileSystem = createFilesystem(filesystemRoot, fqan);
 		myLogger.debug("Connected to file system.");
-		
+
 		myLogger.debug("Using home directory: "
 				+ ((String) fileSystem.getAttribute("HOME_DIRECTORY"))
 						.substring(1));
-		
+
 		String home = (String) fileSystem.getAttribute("HOME_DIRECTORY");
 		String uri = fileSystem.getRoot().getName().getRootURI()
-		+ home.substring(1);
-		
+				+ home.substring(1);
+
 		return uri;
 	}
 
@@ -374,7 +377,8 @@ public class User {
 		MountPoint new_mp = new MountPoint(cred.getDn(), cred.getFqan(), uri,
 				mountPointName);
 		try {
-			FileSystem fileSystem = createFilesystem(new_mp.getRootUrl(), new_mp.getFqan());
+			FileSystem fileSystem = createFilesystem(new_mp.getRootUrl(),
+					new_mp.getFqan());
 			myLogger.debug("Connected to file system.");
 			if (useHomeDirectory) {
 				myLogger.debug("Using home directory: "
@@ -408,64 +412,64 @@ public class User {
 
 	}
 
-//	/**
-//	 * Connects to the filesystem where the file lives on.
-//	 * 
-//	 * @param file
-//	 *            the file you want to access (in a later step)
-//	 * @param cred
-//	 * @return
-//	 * @throws FileSystemException
-//	 * @throws VomsException
-//	 */
-//	private FileSystem connectToFileSystem(final MountPoint mp)
-//			throws FileSystemException {
-//
-//		// check whether a filesystem for this mountpoint is already cached
-//		if (cachedFilesystemConnections.containsKey(mp)) {
-//			myLogger.debug("Using already cached filesystem for mountpoint: "
-//					+ mp.getAlias());
-//			return this.cachedFilesystemConnections.get(mp);
-//		}
-//
-//		ProxyCredential credToUse = null;
-//
-//		// get the right credential for this mountpoint
-//		if (mp.getFqan() != null) {
-//
-//			credToUse = cachedCredentials.get(mp.getFqan());
-//			if (credToUse == null || !credToUse.isValid()) {
-//
-//				// put a new credential in the cache
-//				VO vo = VOManagement.getVO(getFqans().get(mp.getFqan()));
-//				credToUse = CertHelpers.getVOProxyCredential(vo, mp.getFqan(),
-//						getCred());
-//				cachedCredentials.put(mp.getFqan(), credToUse);
-//			} else {
-//				credToUse = cachedCredentials.get(mp.getFqan());
-//			}
-//
-//		} else {
-//			credToUse = getCred();
-//		}
-//
-//		FileSystemOptions opts = new FileSystemOptions();
-//
-//		if (mp.getRootUrl().startsWith("gsiftp")) {
-//			GridFtpFileSystemConfigBuilder builder = GridFtpFileSystemConfigBuilder
-//					.getInstance();
-//			builder.setGSSCredential(opts, credToUse.getGssCredential());
-//			// builder.setUserDirIsRoot(opts, true);
-//		}
-//
-//		FileObject fileRoot = getFsManager().resolveFile(mp.getRootUrl(), opts);
-//
-//		FileSystem fileBase = fileRoot.getFileSystem();
-//
-//		this.cachedFilesystemConnections.put(mp, fileBase);
-//
-//		return fileBase;
-//	}
+	// /**
+	// * Connects to the filesystem where the file lives on.
+	// *
+	// * @param file
+	// * the file you want to access (in a later step)
+	// * @param cred
+	// * @return
+	// * @throws FileSystemException
+	// * @throws VomsException
+	// */
+	// private FileSystem connectToFileSystem(final MountPoint mp)
+	// throws FileSystemException {
+	//
+	// // check whether a filesystem for this mountpoint is already cached
+	// if (cachedFilesystemConnections.containsKey(mp)) {
+	// myLogger.debug("Using already cached filesystem for mountpoint: "
+	// + mp.getAlias());
+	// return this.cachedFilesystemConnections.get(mp);
+	// }
+	//
+	// ProxyCredential credToUse = null;
+	//
+	// // get the right credential for this mountpoint
+	// if (mp.getFqan() != null) {
+	//
+	// credToUse = cachedCredentials.get(mp.getFqan());
+	// if (credToUse == null || !credToUse.isValid()) {
+	//
+	// // put a new credential in the cache
+	// VO vo = VOManagement.getVO(getFqans().get(mp.getFqan()));
+	// credToUse = CertHelpers.getVOProxyCredential(vo, mp.getFqan(),
+	// getCred());
+	// cachedCredentials.put(mp.getFqan(), credToUse);
+	// } else {
+	// credToUse = cachedCredentials.get(mp.getFqan());
+	// }
+	//
+	// } else {
+	// credToUse = getCred();
+	// }
+	//
+	// FileSystemOptions opts = new FileSystemOptions();
+	//
+	// if (mp.getRootUrl().startsWith("gsiftp")) {
+	// GridFtpFileSystemConfigBuilder builder = GridFtpFileSystemConfigBuilder
+	// .getInstance();
+	// builder.setGSSCredential(opts, credToUse.getGssCredential());
+	// // builder.setUserDirIsRoot(opts, true);
+	// }
+	//
+	// FileObject fileRoot = getFsManager().resolveFile(mp.getRootUrl(), opts);
+	//
+	// FileSystem fileBase = fileRoot.getFileSystem();
+	//
+	// this.cachedFilesystemConnections.put(mp, fileBase);
+	//
+	// return fileBase;
+	// }
 
 	/**
 	 * Connects to the filesystem where the file lives on.
@@ -477,15 +481,15 @@ public class User {
 	 * @throws FileSystemException
 	 * @throws VomsException
 	 */
-	private synchronized FileSystem createFilesystem(final String rootUrl, final String fqan)
-			throws FileSystemException {
+	private synchronized FileSystem createFilesystem(final String rootUrl,
+			final String fqan) throws FileSystemException {
 
-//		// check whether a filesystem for this mountpoint is already cached
-//		if (cachedFilesystemConnections.containsKey(mp)) {
-//			myLogger.debug("Using already cached filesystem for mountpoint: "
-//					+ mp.getAlias());
-//			return this.cachedFilesystemConnections.get(mp);
-//		}
+		// // check whether a filesystem for this mountpoint is already cached
+		// if (cachedFilesystemConnections.containsKey(mp)) {
+		// myLogger.debug("Using already cached filesystem for mountpoint: "
+		// + mp.getAlias());
+		// return this.cachedFilesystemConnections.get(mp);
+		// }
 
 		ProxyCredential credToUse = null;
 
@@ -521,13 +525,11 @@ public class User {
 
 		FileSystem fileBase = fileRoot.getFileSystem();
 
-//		this.cachedFilesystemConnections.put(mp, fileBase);
+		// this.cachedFilesystemConnections.put(mp, fileBase);
 
 		return fileBase;
 	}
 
-	
-	
 	/**
 	 * Mounts a filesystem using the default credential of a user.
 	 * 
@@ -548,8 +550,9 @@ public class User {
 		return mountFileSystem(root, name, getCred(), useHomeDirectory);
 	}
 
-	public MountPoint mountFileSystem(final String root, final String name, final String fqan,
-			final boolean useHomeDirectory) throws RemoteFileSystemException {
+	public MountPoint mountFileSystem(final String root, final String name,
+			final String fqan, final boolean useHomeDirectory)
+			throws RemoteFileSystemException {
 
 		if (fqan == null || "None".equals(fqan)) {
 			return mountFileSystem(root, name, useHomeDirectory);
@@ -594,15 +597,16 @@ public class User {
 	 */
 	@Transient
 	private DefaultFileSystemManager getFsManager() throws FileSystemException {
-//		if (fsmanager == null) {
-//
-//			fsmanager = VFSUtil.createNewFsManager(false, false, true, true,
-//					true, true, true, null);
-//
-//		}
-//		return fsmanager;
-//		System.out.println("Creating new FS Manager.");
-//		return VFSUtil.createNewFsManager(false, false, true, true, true, true, true, null);
+		// if (fsmanager == null) {
+		//
+		// fsmanager = VFSUtil.createNewFsManager(false, false, true, true,
+		// true, true, true, null);
+		//
+		// }
+		// return fsmanager;
+		// System.out.println("Creating new FS Manager.");
+		// return VFSUtil.createNewFsManager(false, false, true, true, true,
+		// true, true, null);
 		return threadLocalFsManager.getFsManager();
 	}
 
@@ -620,7 +624,8 @@ public class User {
 	 *             if the (possible) required voms credential could not be
 	 *             created
 	 */
-	public FileObject aquireFile(final String file) throws RemoteFileSystemException {
+	public FileObject aquireFile(final String file)
+			throws RemoteFileSystemException {
 		return aquireFile(file, getCred());
 	}
 
@@ -641,8 +646,8 @@ public class User {
 	 *             if the (possible) required voms credential could not be
 	 *             created
 	 */
-	public FileObject aquireFile(final String file, final ProxyCredential plainCred)
-			throws RemoteFileSystemException {
+	public FileObject aquireFile(final String file,
+			final ProxyCredential plainCred) throws RemoteFileSystemException {
 
 		String file_to_aquire = null;
 		// ProxyCredential credToUse = null;
@@ -652,7 +657,9 @@ public class User {
 			try {
 				return getFsManager().resolveFile(file);
 			} catch (FileSystemException e) {
-				throw new RemoteFileSystemException("Could not access file on local temp filesystem: "+e.getLocalizedMessage());
+				throw new RemoteFileSystemException(
+						"Could not access file on local temp filesystem: "
+								+ e.getLocalizedMessage());
 			}
 		} else if (file.startsWith("/")) {
 			// means file on "mounted" filesystem
@@ -716,7 +723,7 @@ public class User {
 			// TODO check whether vfs does that already
 			// markus
 			// if (!cachedFilesystemConnections.containsKey(mp.getRootUrl())) {
-//			root = this.connectToFileSystem(mp);
+			// root = this.connectToFileSystem(mp);
 			root = this.createFilesystem(mp.getRootUrl(), mp.getFqan());
 			// } else {
 			// root = this.cachedFilesystemConnections.get(mp.getRootUrl());
@@ -912,7 +919,7 @@ public class User {
 
 	public void cleanCache() {
 		// TODO disconnect filesystems somehow?
-//		cachedFilesystemConnections = new HashMap<MountPoint, FileSystem>();
+		// cachedFilesystemConnections = new HashMap<MountPoint, FileSystem>();
 		// // does this affect existing filesystem connection
 		// for ( ProxyCredential proxy : cachedCredentials.values() ) {
 		// proxy.destroy();
@@ -962,22 +969,22 @@ public class User {
 		this.fqans = fqans;
 	}
 
-	
 	public void addProperty(String key, String value) {
 		List<String> list = userProperties.get(key);
-		if ( list == null ) {
+		if (list == null) {
 			list = new LinkedList<String>();
 		}
 		list.add(value);
 	}
-	
+
 	public void removeProperty(String key) {
 		userProperties.remove(key);
 	}
 
 	/**
-	 * Gets a map of this users properties. These properties can be used to store
-	 * anything you can think of. Usful for history and such.
+	 * Gets a map of this users properties. These properties can be used to
+	 * store anything you can think of. Usful for history and such.
+	 * 
 	 * @return the users' properties
 	 */
 	public Map<String, List<String>> getUserProperties() {
@@ -988,15 +995,14 @@ public class User {
 		this.userProperties = userProperties;
 	}
 
-//	@CollectionOfElements
-//	public Map<String, JobSubmissionObjectImpl> getJobTemplates() {
-//		return jobTemplates;
-//	}
-//
-//	public void setJobTemplates(
-//			final Map<String, JobSubmissionObjectImpl> jobTemplates) {
-//		this.jobTemplates = jobTemplates;
-//	}
-	
+	// @CollectionOfElements
+	// public Map<String, JobSubmissionObjectImpl> getJobTemplates() {
+	// return jobTemplates;
+	// }
+	//
+	// public void setJobTemplates(
+	// final Map<String, JobSubmissionObjectImpl> jobTemplates) {
+	// this.jobTemplates = jobTemplates;
+	// }
 
 }

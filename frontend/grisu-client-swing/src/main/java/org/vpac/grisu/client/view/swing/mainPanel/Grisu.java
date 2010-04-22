@@ -28,6 +28,7 @@ import javax.swing.UIManager;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.vpac.grisu.client.control.EnvironmentManager;
@@ -43,6 +44,8 @@ import org.vpac.grisu.client.view.swing.login.LoginDialog;
 import org.vpac.grisu.client.view.swing.login.LoginSplashScreen;
 import org.vpac.grisu.client.view.swing.mountpoints.MountPointsManagementDialog;
 import org.vpac.grisu.client.view.swing.template.SubmissionPanel;
+import org.vpac.grisu.client.view.swing.template.SubmissionPanelInterface;
+import org.vpac.grisu.client.view.swing.template.SubmissionPanelSingle;
 import org.vpac.grisu.client.view.swing.utils.Utils;
 import org.vpac.grisu.control.GrisuRegistry;
 import org.vpac.grisu.control.ServiceInterface;
@@ -61,7 +64,7 @@ public class Grisu implements WindowListener {
 	
 	public static final String apache2License = "http://www.apache.org/licenses/LICENSE-2.0";
 
-    public static final String GRISU_VERSION = "v0.2";
+    public static final String GRISU_VERSION = "v0.2.3";
     
     public static final String[] DEFAULT_HELPDESK_CLASSES = new String[]{"org.vpac.helpDesk.model.anonymousRT.AnonymousRTHelpDesk", "org.vpac.helpDesk.model.trac.TracHelpDesk"};
     public static final String HELPDESK_CONFIG = "support.properties";
@@ -103,7 +106,7 @@ public class Grisu implements WindowListener {
 
 //	private JPanel jobSubmissionPanel = null;
 	
-	private SubmissionPanel submissionPanel = null;
+	private SubmissionPanelInterface submissionPanel = null;
 
 	private GlazedJobMonitorPanel jobMonitorPanel = null;
 	
@@ -513,10 +516,21 @@ public class Grisu implements WindowListener {
 //		return jobSubmissionPanel;
 //	}
 	
-	private SubmissionPanel getSubmissionPanel() {
+	private SubmissionPanelInterface getSubmissionPanel() {
+		
 	if (submissionPanel == null) {
-		submissionPanel = new SubmissionPanel(em);
-		submissionPanel.setTemplateManager(em.getTemplateManager());
+
+		String application = System.getProperty("grisu.defaultApplication");
+
+		if ( StringUtils.isNotBlank(application) ) {
+			submissionPanel = new SubmissionPanelSingle(em);
+			submissionPanel.setTemplateManager(em.getTemplateManager());
+			submissionPanel.setRemoteApplication(application);
+		} else {
+			submissionPanel = new SubmissionPanel(em);
+			submissionPanel.setTemplateManager(em.getTemplateManager());
+		}
+
 	}
 	return submissionPanel;
 }
@@ -545,7 +559,7 @@ public class Grisu implements WindowListener {
 	private JTabbedPane getJTabbedPane() {
 		if (jTabbedPane == null) {
 			jTabbedPane = new JTabbedPane();
-			jTabbedPane.addTab("Job submission", getSubmissionPanel());
+			jTabbedPane.addTab("Job submission", getSubmissionPanel().getPanel());
 			jTabbedPane.addTab("Monitoring", getJobMonitorPanel());
 //			jTabbedPane.addTab("File Management", new GrisuFileCommanderPanel());
 			jTabbedPane.addTab("File management", new GrisuFilePanel(em));

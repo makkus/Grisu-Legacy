@@ -62,7 +62,7 @@ import com.jgoodies.forms.layout.RowSpec;
  * 
  */
 public class SubmissionPanel extends JPanel implements JobCreationInterface,
-		FqanListener {
+		FqanListener, SubmissionPanelInterface {
 
 	private JMenuItem refreshLocalTemplateMenuItem;
 	private JMenuItem refreshRemoteTemplate;
@@ -974,4 +974,38 @@ public class SubmissionPanel extends JPanel implements JobCreationInterface,
 	/**
 	 * @return
 	 */
+
+	public JPanel getPanel() {
+		return this;
+	}
+
+	public void setRemoteApplication(String application) {
+		
+		SubmissionPanel.this.setCursor(Cursor
+				.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+		localList.clearSelection();
+
+
+		if ( remoteListModel.contains(application) ) {
+
+			getRemoteList().setSelectedValue(application, true);
+
+			try {
+				showJobTemplatePanel(
+						TemplateManager.REMOTE_TEMPLATE_LOCATION,
+						application);
+			} catch (NoSuchTemplateException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (TemplateException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			} finally {
+				SubmissionPanel.this
+				.setCursor(Cursor
+						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		}
+	}
 }

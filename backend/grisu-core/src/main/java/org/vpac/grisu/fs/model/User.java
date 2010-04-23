@@ -47,8 +47,8 @@ import uk.ac.dl.escience.vfs.util.VFSUtil;
  */
 public class User {
 
-	public List<DefaultFileSystemManager> allFileSystems = Collections
-			.synchronizedList(new LinkedList<DefaultFileSystemManager>());
+	public List<FileSystem> allFileSystems = Collections
+			.synchronizedList(new LinkedList<FileSystem>());
 
 	// to get a filesystemmanager per thread
 	private class ThreadLocalFsManager extends ThreadLocal {
@@ -57,7 +57,6 @@ public class User {
 				myLogger.debug("Creating new FS Manager.");
 				DefaultFileSystemManager temp = VFSUtil.createNewFsManager(
 						false, false, true, true, true, true, true, null);
-				allFileSystems.add(temp);
 				return temp;
 			} catch (FileSystemException e) {
 				e.printStackTrace();
@@ -125,8 +124,8 @@ public class User {
 	}
 
 	public void closeAllFileSystems() {
-		for (DefaultFileSystemManager fsm : allFileSystems) {
-			fsm.close();
+		for (FileSystem fs : allFileSystems) {
+			fs.getFileSystemManager().closeFileSystem(fs);
 		}
 	}
 
@@ -514,10 +513,9 @@ public class User {
 
 		FileSystemOptions opts = new FileSystemOptions();
 
-		// just to make sure
-		getFsManager();
 		
 		if (rootUrl.startsWith("gsiftp")) {
+			myLogger.debug("Url \""+rootUrl+"\" is gsiftp url, using gridftpfilesystembuilder...");
 			GridFtpFileSystemConfigBuilder builder = GridFtpFileSystemConfigBuilder
 					.getInstance();
 			builder.setGSSCredential(opts, credToUse.getGssCredential());
@@ -527,6 +525,7 @@ public class User {
 		FileObject fileRoot = getFsManager().resolveFile(rootUrl, opts);
 
 		FileSystem fileBase = fileRoot.getFileSystem();
+		allFileSystems.add(fileBase);
 
 		// this.cachedFilesystemConnections.put(mp, fileBase);
 

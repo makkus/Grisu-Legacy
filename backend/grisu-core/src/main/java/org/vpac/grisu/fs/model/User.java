@@ -50,7 +50,7 @@ public class User {
 	public List<DefaultFileSystemManager> allFileSystems = Collections
 			.synchronizedList(new LinkedList<DefaultFileSystemManager>());
 
-	// to get on filesystemmanager per thread
+	// to get a filesystemmanager per thread
 	private class ThreadLocalFsManager extends ThreadLocal {
 		public Object initialValue() {
 			try {

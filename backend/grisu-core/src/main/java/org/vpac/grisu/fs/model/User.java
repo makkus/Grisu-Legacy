@@ -125,8 +125,13 @@ public class User {
 
 	public void closeAllFileSystems() {
 		for (FileSystem fs : allFileSystems) {
-			fs.getFileSystemManager().closeFileSystem(fs);
+			try {
+				fs.getFileSystemManager().closeFileSystem(fs);
+			} catch (Exception e) {
+				myLogger.error(e);
+			}
 		}
+		allFileSystems.clear();
 	}
 
 	/**

@@ -103,19 +103,29 @@ public class WsServiceInterface extends AbstractServiceInterface implements
 
 	// only destroys the session. maybe I should do more here?
 	public String logout() {
+		
+		new Thread() {
+			public void run() {
+				
 
 		try {
-			myLogger.debug("Exiting...");
+			myLogger.debug(getDN()+": exiting...");
 			
+			if ( WsServiceInterface.this.credential != null ) {
+				WsServiceInterface.this.credential.destroy();
+			}
+
 			getUser().closeAllFileSystems();
 			
-			if ( this.credential != null ) {
-				this.credential.destroy();
-			}
 		} catch (Exception e) {
 			myLogger.error(e.getLocalizedMessage(), e);
 		}
-		return "logged out";
+		
+			}
+		}.start();
+
+		return "Logout started in background.";
+
 	}
 
 

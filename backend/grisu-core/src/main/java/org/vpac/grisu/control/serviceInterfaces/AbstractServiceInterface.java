@@ -670,6 +670,7 @@ abstract class AbstractServiceInterface implements ServiceInterface {
 					+ fqan + " took: " + (end.getTime() - start.getTime())
 					+ " ms.");
 			for (String server : mpUrl.keySet()) {
+				try {
 				for (String path : mpUrl.get(server)) {
 
 					String url = null;
@@ -706,6 +707,9 @@ abstract class AbstractServiceInterface implements ServiceInterface {
 					// + "." + fqan + "." + path);
 					// + "." + fqan);
 					mps.add(mp);
+				}
+				} catch (Exception e) {
+					myLogger.error("Can't use mountpoint "+server+": "+e.getLocalizedMessage(), e);
 				}
 			}
 		}

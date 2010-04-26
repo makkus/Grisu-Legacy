@@ -123,7 +123,7 @@ public class User {
 	public User() {
 	}
 
-	public void closeAllFileSystems() {
+	public synchronized void closeAllFileSystems() {
 		for (FileSystem fs : allFileSystems) {
 			try {
 				fs.getFileSystemManager().closeFileSystem(fs);

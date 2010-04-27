@@ -37,6 +37,8 @@ import org.globus.gsi.GlobusCredentialException;
 
 
 public class Gricli implements FileTransferListener {
+	
+	private static Logger myLogger = Logger.getLogger(Gricli.class.getName());
 
 	public static final int DEFAULT_SLEEP_TIME_IN_SECONDS = 600;
 
@@ -201,6 +203,7 @@ public class Gricli implements FileTransferListener {
 			try {
 				executeSubmission();
 			} catch (Exception e) {
+				myLogger.error(e);
 				throw new ExecutionException("Couldn't submit job: "
 						+ e.getLocalizedMessage(), e);
 			}
@@ -235,8 +238,10 @@ public class Gricli implements FileTransferListener {
 		} catch (Exception e) {
 			
 			if ( e instanceof ExecutionException ) {
+				myLogger.error(e);
 				throw (ExecutionException)e;
 			} else {
+				myLogger.error(e);
 				throw new ExecutionException(e);
 			}
 			
@@ -246,6 +251,7 @@ public class Gricli implements FileTransferListener {
 					serviceInterface.logout();
 				}
 			} catch (Exception e) {
+				myLogger.error(e);
 				System.err.println(e.getLocalizedMessage());
 			}
 		}
@@ -287,6 +293,7 @@ public class Gricli implements FileTransferListener {
 							System.out.println("Stageout finished successfully.");
 						}
 					} catch (FileTransferException e) {
+						myLogger.error(e);
 						throw new ExecutionException(
 								"Couldn't stage out jobdirectory: "
 										+ e.getLocalizedMessage(), e);
@@ -302,6 +309,7 @@ public class Gricli implements FileTransferListener {
 							}
 						}
 					} catch (Exception e) {
+						myLogger.error(e);
 						throw new ExecutionException(
 								"Couldn't clean job & jobdirectory: "
 										+ e.getLocalizedMessage(), e);
@@ -320,6 +328,7 @@ public class Gricli implements FileTransferListener {
 			return status;
 
 		} catch (NoSuchJobException e) {
+			myLogger.error(e);
 			throw new ExecutionException("Couldn't find job with jobname \""
 					+ jobProperties.getJobname() + "\".", e);
 		}
@@ -330,6 +339,7 @@ public class Gricli implements FileTransferListener {
 		try {
 			executeSubmission();
 		} catch (Exception e) {
+			myLogger.error(e);
 			throw new ExecutionException("Couldn't submit job: "
 					+ e.getLocalizedMessage(), e);
 		}
@@ -389,6 +399,7 @@ public class Gricli implements FileTransferListener {
 						+ jobProperties.getJobname() + " existed.");
 			}
 		} catch (Exception e) {
+			myLogger.error(e);
 			throw new ExecutionException(
 					"Can't kill & clean existing job with jobname \""
 							+ jobProperties.getJobname() + "\"");
@@ -428,6 +439,7 @@ public class Gricli implements FileTransferListener {
 									+ jobProperties.getJobname() + " existed.");
 				}
 			} catch (Exception e) {
+				myLogger.error(e);
 				throw new JobCreationException(
 						"Can't kill & clean existing job with jobname \""
 								+ jobProperties.getJobname() + "\"");
@@ -509,6 +521,7 @@ public class Gricli implements FileTransferListener {
 		try {
 			serviceInterface.submitJob(jobname, jobProperties.getVO());
 		} catch (Exception e) {
+			myLogger.error(e);
 			throw new JobSubmissionException("Job submission failed: "
 					+ e.getLocalizedMessage(), e);
 		}
@@ -651,6 +664,7 @@ public class Gricli implements FileTransferListener {
 		try {
 			client.start();
 		} catch (ExecutionException e) {
+			myLogger.error(e);
 			System.err.println("Can't execute command: "
 					+ e.getLocalizedMessage());
 			System.exit(1);

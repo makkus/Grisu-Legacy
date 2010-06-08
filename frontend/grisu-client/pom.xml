@@ -8,10 +8,6 @@
   <artifactId>grisu-client</artifactId>
   
   <repositories>
-  	<repository>
-  		<id>vpac</id>
-  		<url>http://hudson.vpac.org/maven_repository</url>
-  	</repository>
 	<repository>
 			<id>ARCS</id>
 			<url>http://code.arcs.org.au/nexus/content/groups/public</url>

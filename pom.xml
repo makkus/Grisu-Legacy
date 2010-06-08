@@ -33,10 +33,6 @@
 		<system>Trac</system>
 		<url>http://projects.arcs.org.au/trac/grisu/</url>
 	</issueManagement>
-	<ciManagement>
-		<system>Hudson</system>
-		<url>http://hudson.vpac.org:8080/</url>
-	</ciManagement>
 	<developers>
 		<developer>
 			<id>markus</id>

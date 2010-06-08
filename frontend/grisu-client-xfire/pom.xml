@@ -10,13 +10,6 @@
 	<name>grisu-client-xfire</name>
 	<url>http://maven.apache.org</url>
 
-	<repositories>
-		<repository>
-			<id>vpac</id>
-			<url>http://hudson.vpac.org/maven_repository
-			</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>

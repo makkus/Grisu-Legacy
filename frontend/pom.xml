@@ -21,10 +21,10 @@
 		<module>grisu-client</module>
 		<module>grisu-client-swing</module>
 		<module>grisu-client-xfire</module>
-		<module>grisu-client-commandline</module>
+<!--		<module>grisu-client-commandline</module>
 		<module>grisu-examples</module>
 		<module>grisu-client-batch</module>
-		<module>gricli</module>
+		<module>gricli</module>-->
 		<module>grisu-client-swing-plugins</module>
 	</modules>
 </project>

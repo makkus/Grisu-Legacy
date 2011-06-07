@@ -59,7 +59,7 @@ public class LoginHelpers {
 		
 		Class directMyProxyUploadClass = null;
 		try {
-			directMyProxyUploadClass = Class.forName("org.vpac.security.light.control.DirectMyProxyUpload");
+			directMyProxyUploadClass = Class.forName("grith.jgrith.control.DirectMyProxyUpload");
 		} catch (ClassNotFoundException e1) {
 			throw new RuntimeException("Proxy_light library not in path. Can't create proxy.");
 		}
@@ -121,7 +121,7 @@ public class LoginHelpers {
 		
 		Class directMyProxyUploadClass = null;
 		try {
-			directMyProxyUploadClass = Class.forName("org.vpac.security.light.control.DirectMyProxyUpload");
+			directMyProxyUploadClass = Class.forName("grith.jgrith.control.DirectMyProxyUpload");
 		} catch (ClassNotFoundException e1) {
 			throw new RuntimeException("Proxy_light library not in path. Can't create proxy.");
 		}
@@ -185,7 +185,7 @@ public class LoginHelpers {
 		
 			Class directMyProxyUploadClass = null;
 			try {
-				directMyProxyUploadClass = Class.forName("org.vpac.security.light.control.DirectMyProxyUpload");
+				directMyProxyUploadClass = Class.forName("grith.jgrith.control.DirectMyProxyUpload");
 			} catch (ClassNotFoundException e1) {
 				throw new RuntimeException("Proxy_light library not in path. Can't create proxy.");
 			}

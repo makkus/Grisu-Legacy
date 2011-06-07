@@ -26,6 +26,36 @@
 			<id>ARCS Snapshots</id>
 			<url>http://code.arcs.org.au/nexus/content/groups/public-snapshots</url>
 		</repository>
+		
+				<repository>
+			<id>releases</id>
+			<url>http://code.ceres.auckland.ac.nz/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>snapshots</id>
+			<url>http://code.ceres.auckland.ac.nz/nexus/content/groups/public-snapshots/
+			</url>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+		</repository>
 	</repositories>
 
 
@@ -81,9 +111,9 @@
 
 					<descriptors>
 						<descriptor>grisu-client-swing.assembly.xml</descriptor>
-						<descriptor>gricli.assembly.xml</descriptor>
+<!--						<descriptor>gricli.assembly.xml</descriptor>-->
 						<descriptor>grisu-local-backend.assembly.xml</descriptor>
-						<descriptor>grisu-client-batch.assembly.xml</descriptor>
+<!--						<descriptor>grisu-client-batch.assembly.xml</descriptor>-->
 					</descriptors>
 
 				</configuration>

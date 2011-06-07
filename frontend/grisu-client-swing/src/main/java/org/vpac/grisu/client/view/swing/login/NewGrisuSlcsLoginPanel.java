@@ -1,5 +1,11 @@
 package org.vpac.grisu.client.view.swing.login;
 
+import grisu.jcommons.interfaces.SlcsListener;
+import grith.gsindl.SLCS;
+import grith.jgrith.CredentialHelpers;
+import grith.sibboleth.ShibListener;
+import grith.sibboleth.ShibLoginPanel;
+
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,13 +35,6 @@ import org.vpac.grisu.client.view.swing.utils.Utils;
 import org.vpac.grisu.control.ServiceInterface;
 import org.vpac.helpDesk.model.Person;
 import org.vpac.helpDesk.model.PersonException;
-import org.vpac.security.light.CredentialHelpers;
-import org.vpac.security.light.plainProxy.PlainProxy;
-
-import au.org.arcs.auth.shibboleth.ShibListener;
-import au.org.arcs.auth.shibboleth.ShibLoginPanel;
-import au.org.arcs.auth.slcs.SLCS;
-import au.org.arcs.jcommons.interfaces.SlcsListener;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -43,14 +42,49 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 public class NewGrisuSlcsLoginPanel extends JPanel implements SlcsListener,
-		ShibListener {
+ShibListener {
 
 	public static final String DEFAULT_SLCS_URL = "https://slcs1.arcs.org.au/SLCS/login";
 
+	public static GSSCredential init(X509Certificate userCert, PrivateKey userKey,
+			int lifetime_in_hours) throws GeneralSecurityException {
+
+		CoGProperties props = CoGProperties.getDefault();
+
+		BouncyCastleCertProcessingFactory factory = BouncyCastleCertProcessingFactory
+		.getDefault();
+
+		int proxyType = GSIConstants.GSI_2_PROXY;
+		// int proxyType = GSIConstants.GSI_3_IMPERSONATION_PROXY;
+
+		ProxyPolicy policy = new ProxyPolicy(ProxyPolicy.IMPERSONATION);
+		ProxyCertInfo proxyCertInfo = new ProxyCertInfo(policy);
+
+		BouncyCastleX509Extension certInfoExt = new GlobusProxyCertInfoExtension(
+				proxyCertInfo);
+
+		X509ExtensionSet extSet = null;
+		if (proxyCertInfo != null) {
+			extSet = new X509ExtensionSet();
+
+			// old OID
+			extSet.add(new GlobusProxyCertInfoExtension(proxyCertInfo));
+		}
+
+		GlobusCredential proxy = factory.createCredential(
+				new X509Certificate[] { userCert }, userKey, props
+				//						.getProxyStrength(), props.getProxyLifeTime() * 3600
+				.getProxyStrength(), 3600
+				* lifetime_in_hours, proxyType, extSet);
+
+		return CredentialHelpers.wrapGlobusCredential(proxy);
+
+	}
 	private LoginPanelsHolder loginPanelHolder = null;
 	private ShibLoginPanel shibLoginPanel;
 	private JButton button;
-	private SLCS slcs;
+
+	private final SLCS slcs;
 
 	/**
 	 * Create the panel.
@@ -74,13 +108,6 @@ public class NewGrisuSlcsLoginPanel extends JPanel implements SlcsListener,
 
 	}
 
-	private ShibLoginPanel getShibLoginPanel_1() {
-		if (shibLoginPanel == null) {
-			shibLoginPanel = new ShibLoginPanel(DEFAULT_SLCS_URL);
-		}
-		return shibLoginPanel;
-	}
-
 	private JButton getButton() {
 		if (button == null) {
 			button = new JButton("Login");
@@ -94,6 +121,13 @@ public class NewGrisuSlcsLoginPanel extends JPanel implements SlcsListener,
 			});
 		}
 		return button;
+	}
+
+	private ShibLoginPanel getShibLoginPanel_1() {
+		if (shibLoginPanel == null) {
+			shibLoginPanel = new ShibLoginPanel(DEFAULT_SLCS_URL);
+		}
+		return shibLoginPanel;
 	}
 
 	private Person getUser() {
@@ -115,40 +149,38 @@ public class NewGrisuSlcsLoginPanel extends JPanel implements SlcsListener,
 		user.setNickname(username);
 		return user;
 	}
-	
-	public static GSSCredential init(X509Certificate userCert, PrivateKey userKey,
-			int lifetime_in_hours) throws GeneralSecurityException {
 
-		CoGProperties props = CoGProperties.getDefault();
-
-		BouncyCastleCertProcessingFactory factory = BouncyCastleCertProcessingFactory
-				.getDefault();
-
-		int proxyType = GSIConstants.GSI_2_PROXY;
-		// int proxyType = GSIConstants.GSI_3_IMPERSONATION_PROXY;
-
-		ProxyPolicy policy = new ProxyPolicy(ProxyPolicy.IMPERSONATION);
-		ProxyCertInfo proxyCertInfo = new ProxyCertInfo(policy);
-
-		BouncyCastleX509Extension certInfoExt = new GlobusProxyCertInfoExtension(
-				proxyCertInfo);
-
-		X509ExtensionSet extSet = null;
-		if (proxyCertInfo != null) {
-			extSet = new X509ExtensionSet();
-
-			// old OID
-			extSet.add(new GlobusProxyCertInfoExtension(proxyCertInfo));
+	private void lockUI(boolean lock) {
+		getButton().setEnabled(!lock);
+		if ( lock ) {
+			this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		} else {
+			this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}
+	}
 
-		GlobusCredential proxy = factory.createCredential(
-				new X509Certificate[] { userCert }, userKey, props
-//						.getProxyStrength(), props.getProxyLifeTime() * 3600
-						.getProxyStrength(), 3600
-						* lifetime_in_hours, proxyType, extSet);
+	public void setParamsHolder(LoginPanel loginPanel) {
 
-		return CredentialHelpers.wrapGlobusCredential(proxy);
+		this.loginPanelHolder = loginPanel;
+	}
 
+	public void shibLoginComplete(PyInstance arg0) {
+
+
+	}
+
+	public void shibLoginFailed(Exception arg0) {
+
+		lockUI(false);
+		Utils.showErrorMessage(getUser(), NewGrisuSlcsLoginPanel.this,
+				"loginError", arg0);
+
+
+
+	}
+
+	public void shibLoginStarted() {
+		lockUI(true);
 	}
 
 	public void slcsLoginComplete(X509Certificate cert, PrivateKey privateKey) {
@@ -163,7 +195,7 @@ public class NewGrisuSlcsLoginPanel extends JPanel implements SlcsListener,
 			} else {
 				return;
 			}
-			
+
 			si = LoginHelpers.login(loginPanelHolder.getLoginParams(), proxy);
 
 			loginPanelHolder.loggedIn(si);
@@ -198,39 +230,6 @@ public class NewGrisuSlcsLoginPanel extends JPanel implements SlcsListener,
 		Utils.showErrorMessage(getUser(), NewGrisuSlcsLoginPanel.this,
 				"loginError", optionalException);
 
-	}
-
-	public void setParamsHolder(LoginPanel loginPanel) {
-
-		this.loginPanelHolder = loginPanel;
-	}
-
-	public void shibLoginComplete(PyInstance arg0) {
-
-		
-	}
-
-	public void shibLoginFailed(Exception arg0) {
-
-		lockUI(false);
-		Utils.showErrorMessage(getUser(), NewGrisuSlcsLoginPanel.this,
-				"loginError", arg0);
-		
-		
-
-	}
-
-	public void shibLoginStarted() {
-		lockUI(true);
-	}
-	
-	private void lockUI(boolean lock) {
-		getButton().setEnabled(!lock);	
-		if ( lock ) {
-			this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		} else {
-			this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		}
 	}
 
 }

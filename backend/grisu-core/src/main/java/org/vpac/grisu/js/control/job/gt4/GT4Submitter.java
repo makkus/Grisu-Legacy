@@ -1,5 +1,7 @@
 package org.vpac.grisu.js.control.job.gt4;
 
+import grith.jgrith.CredentialHelpers;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.StringWriter;
@@ -26,7 +28,6 @@ import org.globus.exec.generated.JobDescriptionType;
 import org.globus.exec.utils.client.ManagedJobFactoryClientHelper;
 import org.globus.exec.utils.rsl.RSLHelper;
 import org.globus.exec.utils.rsl.RSLParseException;
-import org.globus.wsrf.impl.security.authentication.Constants;
 import org.globus.wsrf.impl.security.authorization.Authorization;
 import org.globus.wsrf.impl.security.authorization.HostAuthorization;
 import org.ietf.jgss.GSSCredential;
@@ -43,7 +44,6 @@ import org.vpac.grisu.credential.model.ProxyCredential;
 import org.vpac.grisu.js.control.job.JobSubmitter;
 import org.vpac.grisu.js.model.Job;
 import org.vpac.grisu.js.model.utils.JsdlHelpers;
-import org.vpac.security.light.CredentialHelpers;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -60,8 +60,88 @@ public class GT4Submitter extends JobSubmitter {
 	static final Logger myLogger = Logger.getLogger(GT4Submitter.class
 			.getName());
 
+	static private EndpointReferenceType getFactoryEPR(String contact,
+			String factoryType) throws Exception {
+		URL factoryUrl = ManagedJobFactoryClientHelper.getServiceURL(contact)
+		.getURL();
+
+		myLogger.debug("Factory Url: " + factoryUrl);
+		return ManagedJobFactoryClientHelper.getFactoryEndpoint(factoryUrl,
+				factoryType);
+	}
+
 	protected InformationManager informationManager = CachedMdsInformationManager
-			.getDefaultCachedMdsInformationManager();
+	.getDefaultCachedMdsInformationManager();
+
+	// // this method is just for testing. Do not use!!!
+	// protected String submit(String host, String factoryType, Document jsdl,
+	// GSSCredential credential) {
+	//
+	// JobDescriptionType jobDesc = null;
+	// String submittedJobDesc = null;
+	// try {
+	// submittedJobDesc = createJobSubmissionDescription(jsdl);
+	// jobDesc = RSLHelper.readRSL(submittedJobDesc);
+	//
+	// } catch (RSLParseException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// return null;
+	// }
+	//
+	// /*
+	// * Job test parameters (adjust to your needs)
+	// */
+	// // remote host
+	// //String contact = "ng2.vpac.org";
+	//
+	// // Factory type: Fork, Condor, PBS, LSF
+	// //String factoryType = ManagedJobFactoryConstants.FACTORY_TYPE.FORK;
+	// // String factoryType = ManagedJobFactoryConstants.FACTORY_TYPE.PBS;
+	//
+	// // Deafult Security: Host authorization + XML encryption
+	// Authorization authz = HostAuthorization.getInstance();
+	// Integer xmlSecurity = Constants.ENCRYPTION;
+	//
+	// // Submission mode: batch = will not wait
+	// boolean batchMode = true;
+	//
+	// // a Simple command executable (if no job file)
+	// String simpleJobCommandLine = null;
+	//
+	// // Job timeout values: duration, termination times
+	// Date serviceDuration = null;
+	// Date serviceTermination = null;
+	// int timeout = GramJob.DEFAULT_TIMEOUT;
+	//
+	// String handle = null;
+	// try {
+	//
+	// if ( credential == null || credential.getRemainingLifetime() < 1 ) {
+	// throw new NoValidCredentialException("Credential is not valid.");
+	// }
+	//
+	// GramClient gram = new GramClient(credential);
+	//
+	// handle = gram.submitRSL(getFactoryEPR(host,factoryType)
+	// , simpleJobCommandLine, jobDesc
+	// , authz, xmlSecurity
+	// , batchMode, false, false
+	// , serviceDuration, serviceTermination, timeout );
+	//
+	// } catch (Exception e) {
+	// //TODO handle that
+	// e.printStackTrace();
+	// }
+	//
+	// //job.setSubmittedJobDescription(submittedJobDesc);
+	//
+	// myLogger.debug("Submitted rsl job
+	// description:\n--------------------------------");
+	// myLogger.debug(submittedJobDesc);
+	//
+	// return handle;
+	// }
 
 	/*
 	 * (non-Javadoc)
@@ -72,14 +152,14 @@ public class GT4Submitter extends JobSubmitter {
 	 */
 	private String createJobSubmissionDescription(
 			ServiceInterface serviceInterface, Document jsdl)
-			throws ServerJobSubmissionException {
+	throws ServerJobSubmissionException {
 
 		DebugUtils.jsdlDebugOutput("Before translating into rsl: ", jsdl);
 
 		Document output = null;
 		try {
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory
-					.newInstance();
+			.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			output = docBuilder.newDocument();
 		} catch (ParserConfigurationException e1) {
@@ -99,7 +179,7 @@ public class GT4Submitter extends JobSubmitter {
 		// Add "argument"s
 		String[] arguments = JsdlHelpers.getPosixApplicationArguments(jsdl);
 		for (String argument : arguments) {
-			if (argument != null && !"".equals(argument.trim())) {
+			if ((argument != null) && !"".equals(argument.trim())) {
 				Element argument_node = output.createElement("argument");
 				argument_node.setTextContent(argument);
 				job.appendChild(argument_node);
@@ -113,7 +193,7 @@ public class GT4Submitter extends JobSubmitter {
 
 		// "stdin" element if available
 		String stdinValue = JsdlHelpers.getPosixStandardInput(jsdl);
-		if (stdinValue != null && !"".equals(stdinValue)) {
+		if ((stdinValue != null) && !"".equals(stdinValue)) {
 			Element stdin = output.createElement("stdin");
 			stdin.setTextContent(stdinValue);
 			job.appendChild(stdin);
@@ -172,7 +252,7 @@ public class GT4Submitter extends JobSubmitter {
 		// total memory
 		Long memory = JsdlHelpers.getTotalMemoryRequirement(jsdl);
 
-		if (memory != null && memory >= 0) {
+		if ((memory != null) && (memory >= 0)) {
 			Element totalMemory = output.createElement("maxMemory");
 			// convert from bytes to mb
 			memory = memory / 1024;
@@ -206,7 +286,7 @@ public class GT4Submitter extends JobSubmitter {
 		// Element targetURL = output.createElement("destinationUrl");
 		// targetURL.setTextContent(stageIns.get(source));
 		// stageIn.appendChild(targetURL);
-		//			
+		//
 		// fileStageIn.appendChild(stageIn);
 		// }
 		// job.appendChild(fileStageIn);
@@ -233,7 +313,7 @@ public class GT4Submitter extends JobSubmitter {
 		} catch (Exception e) {
 			// doesn't matter
 		}
-		if (modules_string != null && modules_string.length > 0) {
+		if ((modules_string != null) && (modules_string.length > 0)) {
 			for (String module_string : modules_string) {
 				if (!"".equals(module_string)) {
 					Element module = output.createElement("module");
@@ -253,29 +333,29 @@ public class GT4Submitter extends JobSubmitter {
 			String subLoc = JsdlHelpers.getCandidateHosts(jsdl)[0];
 
 			// if we know application, version and submissionLocation
-			if (application != null && version != null & subLoc != null) {
+			if ((application != null) && (version != null) & (subLoc != null)) {
 				Map<String, String> appDetails = serviceInterface
-						.getApplicationDetails(application, version, subLoc);
+				.getApplicationDetails(application, version, subLoc);
 
 				try {
 					modules_string = appDetails.get(
 							JobConstants.MDS_MODULES_KEY).split(",");
 
-					if (modules_string == null || "".equals(modules_string)) {
+					if ((modules_string == null) || "".equals(modules_string)) {
 						myLogger
-								.warn("No module for this application/version/submissionLocation found. Submitting nonetheless...");
+						.warn("No module for this application/version/submissionLocation found. Submitting nonetheless...");
 					}
 
 				} catch (Exception e) {
 					myLogger
-							.warn("Could not get module for this application/version/submissionLocation: "
-									+ e.getLocalizedMessage()
-									+ ". Submitting nonetheless...");
+					.warn("Could not get module for this application/version/submissionLocation: "
+							+ e.getLocalizedMessage()
+							+ ". Submitting nonetheless...");
 				}
 
 				// if we know application and submissionlocation but version
 				// doesn't matter
-			} else if (application != null && version == null && subLoc != null) {
+			} else if ((application != null) && (version == null) && (subLoc != null)) {
 
 				Map<String, String> appDetails = serviceInterface.getApplicationDetails(application, subLoc);
 
@@ -283,24 +363,24 @@ public class GT4Submitter extends JobSubmitter {
 					modules_string = appDetails.get(
 							JobConstants.MDS_MODULES_KEY).split(",");
 
-					if (modules_string == null || "".equals(modules_string)) {
+					if ((modules_string == null) || "".equals(modules_string)) {
 						myLogger
-								.warn("No module for this application/submissionLocation found. Submitting nonetheless...");
+						.warn("No module for this application/submissionLocation found. Submitting nonetheless...");
 					}
 
 				} catch (Exception e) {
 					myLogger
-							.warn("Could not get module for this application/submissionLocation: "
-									+ e.getLocalizedMessage()
-									+ ". Submitting nonetheless...");
+					.warn("Could not get module for this application/submissionLocation: "
+							+ e.getLocalizedMessage()
+							+ ". Submitting nonetheless...");
 				}
 
 			} else {
 				throw new ServerJobSubmissionException(
-						"Can't determine module because either/or application, version submissionLocation are missing.");
+				"Can't determine module because either/or application, version submissionLocation are missing.");
 			}
 
-			if (modules_string != null && modules_string.length > 0) {
+			if ((modules_string != null) && (modules_string.length > 0)) {
 
 				for (String module_string : modules_string) {
 					if (!"".equals(module_string)) {
@@ -316,14 +396,14 @@ public class GT4Submitter extends JobSubmitter {
 		// email
 		String email = JsdlHelpers.getEmail(jsdl);
 
-		if (email != null && !"".equals(email)) {
+		if ((email != null) && !"".equals(email)) {
 			Element email_address = output.createElement("email_address");
 			email_address.setTextContent(email);
 			extensions.appendChild(email_address);
 
 			if (JsdlHelpers.sendEmailOnJobStart(jsdl)) {
 				Element emailonexecution = output
-						.createElement("emailonexecution");
+				.createElement("emailonexecution");
 				emailonexecution.setTextContent("yes");
 				extensions.appendChild(emailonexecution);
 			}
@@ -332,7 +412,7 @@ public class GT4Submitter extends JobSubmitter {
 				Element emailonabort = output.createElement("emailonabort");
 				emailonabort.setTextContent("yes");
 				Element emailontermination = output
-						.createElement("emailontermination");
+				.createElement("emailontermination");
 				emailontermination.setTextContent("yes");
 				extensions.appendChild(emailonabort);
 				extensions.appendChild(emailontermination);
@@ -346,7 +426,7 @@ public class GT4Submitter extends JobSubmitter {
 		StreamResult result = null;
 		try {
 			Transformer transformer = TransformerFactory.newInstance()
-					.newTransformer();
+			.newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
 			result = new StreamResult(new StringWriter());
@@ -370,75 +450,63 @@ public class GT4Submitter extends JobSubmitter {
 		return result.getWriter().toString();
 	}
 
-	// // this method is just for testing. Do not use!!!
-	// protected String submit(String host, String factoryType, Document jsdl,
-	// GSSCredential credential) {
-	//		
-	// JobDescriptionType jobDesc = null;
-	// String submittedJobDesc = null;
-	// try {
-	// submittedJobDesc = createJobSubmissionDescription(jsdl);
-	// jobDesc = RSLHelper.readRSL(submittedJobDesc);
-	//
-	// } catch (RSLParseException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// return null;
-	// }
-	//		
-	// /*
-	// * Job test parameters (adjust to your needs)
-	// */
-	// // remote host
-	// //String contact = "ng2.vpac.org";
-	//		
-	// // Factory type: Fork, Condor, PBS, LSF
-	// //String factoryType = ManagedJobFactoryConstants.FACTORY_TYPE.FORK;
-	// // String factoryType = ManagedJobFactoryConstants.FACTORY_TYPE.PBS;
-	//		
-	// // Deafult Security: Host authorization + XML encryption
-	// Authorization authz = HostAuthorization.getInstance();
-	// Integer xmlSecurity = Constants.ENCRYPTION;
-	//		
-	// // Submission mode: batch = will not wait
-	// boolean batchMode = true;
-	//		
-	// // a Simple command executable (if no job file)
-	// String simpleJobCommandLine = null;
-	//		
-	// // Job timeout values: duration, termination times
-	// Date serviceDuration = null;
-	// Date serviceTermination = null;
-	// int timeout = GramJob.DEFAULT_TIMEOUT;
-	//		
-	// String handle = null;
-	// try {
-	//			
-	// if ( credential == null || credential.getRemainingLifetime() < 1 ) {
-	// throw new NoValidCredentialException("Credential is not valid.");
-	// }
-	//			
-	// GramClient gram = new GramClient(credential);
-	//
-	// handle = gram.submitRSL(getFactoryEPR(host,factoryType)
-	// , simpleJobCommandLine, jobDesc
-	// , authz, xmlSecurity
-	// , batchMode, false, false
-	// , serviceDuration, serviceTermination, timeout );
-	//			
-	// } catch (Exception e) {
-	// //TODO handle that
-	// e.printStackTrace();
-	// }
-	//		
-	// //job.setSubmittedJobDescription(submittedJobDesc);
-	//		
-	// myLogger.debug("Submitted rsl job
-	// description:\n--------------------------------");
-	// myLogger.debug(submittedJobDesc);
-	//
-	// return handle;
-	// }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.vpac.grisu.js.control.job.JobSubmitter#getJobStatus(java.lang.String,
+	 * org.vpac.grisu.credential.model.ProxyCredential)
+	 */
+	@Override
+	public int getJobStatus(String endPointReference, ProxyCredential cred) {
+
+		String status = null;
+		int grisu_status = Integer.MIN_VALUE;
+		status = GramClient.getJobStatus(endPointReference, cred
+				.getGssCredential());
+
+		grisu_status = translateToGrisuStatus(status);
+
+		return grisu_status;
+	}
+
+	@Override
+	public String getServerEndpoint(String server) {
+		return "https://" + server
+		+ ":8443/wsrf/services/ManagedJobFactoryService";
+
+	}
+
+	private final int killJob(final String endpoint, final GSSCredential cred) {
+
+		String status = null;
+		int grisu_status = Integer.MIN_VALUE;
+		status = GramClient.destroyJob(endpoint, cred);
+
+		grisu_status = translateToGrisuStatus(status);
+
+		if (grisu_status == JobConstants.NO_SUCH_JOB) {
+			return JobConstants.KILLED;
+		}
+
+		return grisu_status;
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.vpac.grisu.js.control.job.JobSubmitter#killJob(java.lang.String,
+	 * org.vpac.grisu.credential.model.ProxyCredential)
+	 */
+	@Override
+	public final int killJob(final String endPointReference,
+			final ProxyCredential cred) {
+
+		return killJob(endPointReference, cred.getGssCredential());
+
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -446,6 +514,7 @@ public class GT4Submitter extends JobSubmitter {
 	 * @see org.vpac.grisu.js.control.job.JobSubmitter#submit(java.lang.String,
 	 * org.vpac.grisu.js.model.Job)
 	 */
+	@Override
 	protected final String submit(final ServiceInterface si,
 			final String host, final String factoryType, final Job job) throws ServerJobSubmissionException {
 
@@ -498,14 +567,14 @@ public class GT4Submitter extends JobSubmitter {
 			try {
 
 				credential = CredentialHelpers
-						.convertByteArrayToGSSCredential(job.getCredential()
-								.getCredentialData());
+				.convertByteArrayToGSSCredential(job.getCredential()
+						.getCredentialData());
 
-				if (credential == null || credential.getRemainingLifetime() < 1) {
+				if ((credential == null) || (credential.getRemainingLifetime() < 1)) {
 					throw new NoValidCredentialException(
 							"Credential associated with job: " + job.getDn()
-									+ " / " + job.getJobname()
-									+ " is not valid.");
+							+ " / " + job.getJobname()
+							+ " is not valid.");
 				}
 
 				GramClient gram = new GramClient(credential);
@@ -549,28 +618,28 @@ public class GT4Submitter extends JobSubmitter {
 			String hostname = host.substring(0, host
 					.indexOf(":8443/wsrf/services/ManagedJobFactoryService"));
 			String eprString = "<ns00:EndpointReferenceType xmlns:ns00=\"http://schemas.xmlsoap.org/ws/2004/03/addressing\">\n"
-					+ "<ns00:Address>"
-					+ hostname
-					+ ":8443/wsrf/services/ManagedExecutableJobService</ns00:Address>\n"
-					+ "<ns00:ReferenceProperties><ResourceID xmlns=\"http://www.globus.org/namespaces/2004/10/gram/job\">"
-					+ uid
-					+ "</ResourceID></ns00:ReferenceProperties>\n"
-					+ "<wsa:ReferenceParameters xmlns:wsa=\"http://schemas.xmlsoap.org/ws/2004/03/addressing\"/>\n"
-					+ "</ns00:EndpointReferenceType>";
+				+ "<ns00:Address>"
+				+ hostname
+				+ ":8443/wsrf/services/ManagedExecutableJobService</ns00:Address>\n"
+				+ "<ns00:ReferenceProperties><ResourceID xmlns=\"http://www.globus.org/namespaces/2004/10/gram/job\">"
+				+ uid
+				+ "</ResourceID></ns00:ReferenceProperties>\n"
+				+ "<wsa:ReferenceParameters xmlns:wsa=\"http://schemas.xmlsoap.org/ws/2004/03/addressing\"/>\n"
+				+ "</ns00:EndpointReferenceType>";
 			try {
 				myLogger.debug("Writing out epr file.");
 				String vo = job.getFqan();
-				if (vo == null || "".equals(vo)) {
+				if ((vo == null) || "".equals(vo)) {
 					vo = "non_vo";
 				} else {
 					vo = vo.replace("/", "_");
 				}
 
 				String uFileName = ServerPropertiesManager.getDebugDirectory()
-						+ "/"
-						+ job.getDn().replace("=", "_").replace(",", "_")
-								.replace(" ", "_") + "_" + job.getJobname()
-						+ "_" + vo + "_" + job.hashCode();
+				+ "/"
+				+ job.getDn().replace("=", "_").replace(",", "_")
+				.replace(" ", "_") + "_" + job.getJobname()
+				+ "_" + vo + "_" + job.hashCode();
 				FileWriter fileWriter = new FileWriter(uFileName + ".epr");
 				BufferedWriter buffWriter = new BufferedWriter(fileWriter);
 				buffWriter.write(eprString);
@@ -598,28 +667,10 @@ public class GT4Submitter extends JobSubmitter {
 		}
 
 		myLogger
-				.debug("Submitted rsl job description:\n--------------------------------");
+		.debug("Submitted rsl job description:\n--------------------------------");
 		myLogger.debug(submittedJobDesc);
 
 		return handle;
-
-	}
-
-
-	static private EndpointReferenceType getFactoryEPR(String contact,
-			String factoryType) throws Exception {
-		URL factoryUrl = ManagedJobFactoryClientHelper.getServiceURL(contact)
-				.getURL();
-
-		myLogger.debug("Factory Url: " + factoryUrl);
-		return ManagedJobFactoryClientHelper.getFactoryEndpoint(factoryUrl,
-				factoryType);
-	}
-
-	@Override
-	public String getServerEndpoint(String server) {
-		return "https://" + server
-				+ ":8443/wsrf/services/ManagedJobFactoryService";
 
 	}
 
@@ -643,7 +694,7 @@ public class GT4Submitter extends JobSubmitter {
 			grisu_status = JobConstants.CLEAN_UP;
 		} else if ("NoSuchJob".equals(status)) {
 			grisu_status = JobConstants.NO_SUCH_JOB;
-		} else if (status != null && status.startsWith("Failed")) {
+		} else if ((status != null) && status.startsWith("Failed")) {
 			grisu_status = JobConstants.FAILED;
 		} else {
 			grisu_status = Integer.MAX_VALUE;
@@ -652,62 +703,14 @@ public class GT4Submitter extends JobSubmitter {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.vpac.grisu.js.control.job.JobSubmitter#getJobStatus(java.lang.String,
-	 * org.vpac.grisu.credential.model.ProxyCredential)
-	 */
-	public int getJobStatus(String endPointReference, ProxyCredential cred) {
-
-		String status = null;
-		int grisu_status = Integer.MIN_VALUE;
-		status = GramClient.getJobStatus(endPointReference, cred
-				.getGssCredential());
-
-		grisu_status = translateToGrisuStatus(status);
-
-		return grisu_status;
-	}
-
-	private final int killJob(final String endpoint, final GSSCredential cred) {
-
-		String status = null;
-		int grisu_status = Integer.MIN_VALUE;
-		status = GramClient.destroyJob(endpoint, cred);
-
-		grisu_status = translateToGrisuStatus(status);
-
-		if (grisu_status == JobConstants.NO_SUCH_JOB) {
-			return JobConstants.KILLED;
-		}
-
-		return grisu_status;
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.vpac.grisu.js.control.job.JobSubmitter#killJob(java.lang.String,
-	 * org.vpac.grisu.credential.model.ProxyCredential)
-	 */
-	public final int killJob(final String endPointReference,
-			final ProxyCredential cred) {
-
-		return killJob(endPointReference, cred.getGssCredential());
-
-	}
-
 	// public static void main (String[] args) {
-	//		
+	//
 	// GT4Submitter submitter = new GT4Submitter();
 	// Document jsdl = SeveralXMLHelpers.loadXMLFile(new
 	// File("/home/markus/Desktop/sleep.jsdl"));
-	//		
+	//
 	// String rsl = submitter.createJobSubmissionDescription(jsdl);
-	//		
+	//
 	// GSSCredential credential = null;
 	// try {
 	// GlobusCredential proxy = CredentialHelpers.loadGlobusCredential(new
@@ -717,7 +720,7 @@ public class GT4Submitter extends JobSubmitter {
 	// // TODO Auto-generated catch block
 	// e.printStackTrace();
 	// }
-	//		
+	//
 	// // String handle = submitter.submit("ng2.sapac.edu.au",
 	// ManagedJobFactoryConstants.FACTORY_TYPE.PBS, jsdl, credential);
 	// // String handle = submitter.submit("ng2dev.vpac.monash.edu.au",
@@ -727,7 +730,7 @@ public class GT4Submitter extends JobSubmitter {
 	// // String handle = submitter.submit("ng2.hpcu.uq.edu.au",
 	// ManagedJobFactoryConstants.FACTORY_TYPE.PBS, jsdl, credential);
 	// System.out.println("Handle of job: "+handle);
-	//		
+	//
 	// String uid = handle.substring(handle.indexOf("?")+1);
 	// System.out.println("Uid: "+uid);
 	// // String eprString = "<ns00:EndpointReferenceType
@@ -746,7 +749,7 @@ public class GT4Submitter extends JobSubmitter {
 	// xmlns:ns00=\"http://schemas.xmlsoap.org/ws/2004/03/addressing\"><ns00:Address>https://ng2dev.vpac.monash.edu.au:8443/wsrf/services/ManagedExecutableJobService</ns00:Address><ns00:ReferenceProperties><ResourceID
 	// xmlns=\"http://www.globus.org/namespaces/2004/10/gram/job\">"+uid+"</ResourceID></ns00:ReferenceProperties><wsa:ReferenceParameters
 	// xmlns:wsa=\"http://schemas.xmlsoap.org/ws/2004/03/addressing\"/></ns00:EndpointReferenceType>";
-	//		
+	//
 	// try {
 	// FileWriter fileWriter = new
 	// FileWriter("/home/markus/Desktop/test44.epr");
@@ -757,7 +760,7 @@ public class GT4Submitter extends JobSubmitter {
 	// } catch (Exception e) {
 	// e.printStackTrace();
 	// }
-	//		
+	//
 	// }
 
 }

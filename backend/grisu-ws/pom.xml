@@ -74,9 +74,9 @@
 			<version>5.1.6</version>
 		</dependency>
 		<dependency>
-			<groupId>au.org.arcs.auth</groupId>
-			<artifactId>simpleProxyLib</artifactId>
-			<version>0.3</version>
+			<groupId>grith</groupId>
+			<artifactId>jgrith</artifactId>
+			<version>0.5.7-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

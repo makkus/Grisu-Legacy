@@ -1,5 +1,7 @@
 package org.vpac.grisu.control.utils;
 
+import grith.jgrith.Init;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,7 +13,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.log4j.Logger;
-import org.vpac.security.light.Init;
 
 public class LocalTemplatesHelper {
 
@@ -26,33 +27,21 @@ public class LocalTemplatesHelper {
 			.getProperty("user.home"), ".glite");
 
 	public static final File GLOBUS_CONFIG_DIR = new File(GRISU_DIRECTORY,
-			"globus");
+	"globus");
 
-	/**
-	 * Creates the grisu directory if it doesn't exist yet.
-	 * 
-	 * @throws Exception
-	 *             if something goes wrong
-	 */
-	public static void createGrisuDirectories() throws Exception {
-
-		if (!GRISU_DIRECTORY.exists()) {
-			if (!GRISU_DIRECTORY.mkdirs()) {
-				myLogger.error("Could not create vomses directory.");
-				throw new Exception(
-						"Could not create grisu directory. Please set permissions for "
-								+ GRISU_DIRECTORY.toString()
-								+ " to be created.");
+	public static void copyFile(File in, File out) throws IOException {
+		FileChannel inChannel = new FileInputStream(in).getChannel();
+		FileChannel outChannel = new FileOutputStream(out).getChannel();
+		try {
+			inChannel.transferTo(0, inChannel.size(), outChannel);
+		} catch (IOException e) {
+			throw e;
+		} finally {
+			if (inChannel != null) {
+				inChannel.close();
 			}
-		}
-
-		if (!TEMPLATES_AVAILABLE_DIR.exists()) {
-			if (!TEMPLATES_AVAILABLE_DIR.mkdirs()) {
-				myLogger.error("Could not create available_vomses directory.");
-				throw new Exception(
-						"Could not create templates_available directory. Please set permissions for "
-								+ TEMPLATES_AVAILABLE_DIR.toString()
-								+ " to be created.");
+			if (outChannel != null) {
+				outChannel.close();
 			}
 		}
 	}
@@ -78,7 +67,7 @@ public class LocalTemplatesHelper {
 			byte data[] = new byte[BUFFER_SIZE];
 
 			InputStream in = Init.class
-					.getResourceAsStream("/templates_available.zip");
+			.getResourceAsStream("/templates_available.zip");
 			ZipInputStream zipStream = new ZipInputStream(in);
 
 			BufferedOutputStream dest = null;
@@ -125,6 +114,35 @@ public class LocalTemplatesHelper {
 
 	}
 
+	/**
+	 * Creates the grisu directory if it doesn't exist yet.
+	 * 
+	 * @throws Exception
+	 *             if something goes wrong
+	 */
+	public static void createGrisuDirectories() throws Exception {
+
+		if (!GRISU_DIRECTORY.exists()) {
+			if (!GRISU_DIRECTORY.mkdirs()) {
+				myLogger.error("Could not create vomses directory.");
+				throw new Exception(
+						"Could not create grisu directory. Please set permissions for "
+						+ GRISU_DIRECTORY.toString()
+						+ " to be created.");
+			}
+		}
+
+		if (!TEMPLATES_AVAILABLE_DIR.exists()) {
+			if (!TEMPLATES_AVAILABLE_DIR.mkdirs()) {
+				myLogger.error("Could not create available_vomses directory.");
+				throw new Exception(
+						"Could not create templates_available directory. Please set permissions for "
+						+ TEMPLATES_AVAILABLE_DIR.toString()
+						+ " to be created.");
+			}
+		}
+	}
+
 	private static void unzipFileToDir(String zipFileResourcePath,
 			File targetDir) {
 
@@ -144,7 +162,7 @@ public class LocalTemplatesHelper {
 			while ((entry = zipstream.getNextEntry()) != null) {
 				myLogger.debug("Entry: " + entry.getName());
 				String filePath = GRISU_DIRECTORY.getAbsolutePath()
-						+ File.separator + entry.getName();
+				+ File.separator + entry.getName();
 
 				if (!entry.isDirectory()) {
 
@@ -172,21 +190,6 @@ public class LocalTemplatesHelper {
 			myLogger.error(e);
 		}
 
-	}
-
-	public static void copyFile(File in, File out) throws IOException {
-		FileChannel inChannel = new FileInputStream(in).getChannel();
-		FileChannel outChannel = new FileOutputStream(out).getChannel();
-		try {
-			inChannel.transferTo(0, inChannel.size(), outChannel);
-		} catch (IOException e) {
-			throw e;
-		} finally {
-			if (inChannel != null)
-				inChannel.close();
-			if (outChannel != null)
-				outChannel.close();
-		}
 	}
 
 }

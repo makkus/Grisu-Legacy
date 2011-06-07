@@ -1,5 +1,10 @@
 package org.vpac.grisu.control.serviceInterfaces;
 
+import grith.jgrith.control.CertificateFiles;
+import grith.jgrith.control.VomsesFiles;
+import grith.jgrith.myProxy.MyProxy_light;
+import grith.jgrith.plainProxy.LocalProxy;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -16,14 +21,10 @@ import org.vpac.grisu.control.utils.LocalTemplatesHelper;
 import org.vpac.grisu.control.utils.MyProxyServerParams;
 import org.vpac.grisu.control.utils.ServerPropertiesManager;
 import org.vpac.grisu.credential.model.ProxyCredential;
-import org.vpac.security.light.control.CertificateFiles;
-import org.vpac.security.light.control.VomsesFiles;
-import org.vpac.security.light.myProxy.MyProxy_light;
-import org.vpac.security.light.plainProxy.LocalProxy;
 import org.w3c.dom.Document;
 
 public class LocalServiceInterface extends AbstractServiceInterface implements
-		ServiceInterface {
+ServiceInterface {
 
 	private ProxyCredential credential = null;
 	private String myproxy_username = null;
@@ -31,7 +32,7 @@ public class LocalServiceInterface extends AbstractServiceInterface implements
 
 	@Override
 	protected ProxyCredential getCredential() throws NoValidCredentialException {
-		
+
 		long oldLifetime = -1;
 		try {
 			if ( credential != null ) {
@@ -44,31 +45,31 @@ public class LocalServiceInterface extends AbstractServiceInterface implements
 		if ( oldLifetime < ServerPropertiesManager.getMinProxyLifetimeBeforeGettingNewProxy() ) {
 			myLogger.debug("Credential reached minimum lifetime. Getting new one from myproxy. Old lifetime: "+oldLifetime);
 			this.credential = null;
-//			user.cleanCache();
+			//			user.cleanCache();
 		}
 
-		if (credential == null || ! credential.isValid() ) {
+		if ((credential == null) || ! credential.isValid() ) {
 
-			if (myproxy_username == null || myproxy_username.length() == 0) {
-				if (passphrase == null || passphrase.length == 0) {
+			if ((myproxy_username == null) || (myproxy_username.length() == 0)) {
+				if ((passphrase == null) || (passphrase.length == 0)) {
 					// try local proxy
 					try {
 						credential = new ProxyCredential(LocalProxy
 								.loadGSSCredential());
 					} catch (Exception e) {
 						throw new NoValidCredentialException(
-								"Could not load credential/no valid login data.");
+						"Could not load credential/no valid login data.");
 					}
 					if (!credential.isValid()) {
 						throw new NoValidCredentialException(
-								"Local proxy is not valid anymore.");
+						"Local proxy is not valid anymore.");
 					}
-				} 
+				}
 			} else {
 				// get credential from myproxy
 				String myProxyServer = MyProxyServerParams.getMyProxyServer();
 				int myProxyPort = MyProxyServerParams.getMyProxyPort();
-				
+
 				try {
 					// this is needed because of a possible round-robin myproxy server
 					myProxyServer = InetAddress.getByName(myProxyServer).getHostAddress();
@@ -90,65 +91,18 @@ public class LocalServiceInterface extends AbstractServiceInterface implements
 				}
 				if (!credential.isValid()) {
 					throw new NoValidCredentialException(
-							"MyProxy credential is not valid.");
+					"MyProxy credential is not valid.");
 				}
 			}
 		}
-		
-		
+
+
 		return credential;
 
 	}
 
-	public Document getTemplate(String application)
-			throws NoSuchTemplateException {
-		Document doc = ServiceTemplateManagement.getAvailableTemplate(application);
-		
-		if ( doc == null ) {
-			throw new NoSuchTemplateException("Could not find template for application: "+application+".");
-		}
-		
-		return doc;
-	}
-
-	public Document getTemplate(String application, String version)
-			throws NoSuchTemplateException {
-		Document doc = ServiceTemplateManagement.getAvailableTemplate(application);
-		
-		if ( doc == null ) {
-			throw new NoSuchTemplateException("Could not find template for application: "+application+", version "+version);
-		}
-		
-		return doc;
-		
-	}
-
-	public String[] listHostedApplicationTemplates() {
-		return ServiceTemplateManagement.getAllAvailableApplications();
-	}
-
-	public void login(String username, char[] password)
-			throws NoValidCredentialException {
-
-		try {
-			LocalTemplatesHelper.copyTemplatesAndMaybeGlobusFolder();
-			VomsesFiles.copyVomses();
-			CertificateFiles.copyCACerts();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		this.myproxy_username = username;
-		this.passphrase = password;
-	}
-
-	public String logout() {
-		Arrays.fill(passphrase, 'x');
-		return null;
-	}
-
 	public long getCredentialEndTime() {
-		
+
 		String myProxyServer = MyProxyServerParams.getMyProxyServer();
 		int myProxyPort = MyProxyServerParams.getMyProxyPort();
 
@@ -160,7 +114,7 @@ public class LocalServiceInterface extends AbstractServiceInterface implements
 			e1.printStackTrace();
 			throw new NoValidCredentialException("Could not download myproxy credential: "+e1.getLocalizedMessage());
 		}
-		
+
 		MyProxy myproxy = new MyProxy(myProxyServer, myProxyPort);
 		CredentialInfo info = null;
 		try {
@@ -169,10 +123,57 @@ public class LocalServiceInterface extends AbstractServiceInterface implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return info.getEndTime();
 
-		
+
+	}
+
+	public Document getTemplate(String application)
+	throws NoSuchTemplateException {
+		Document doc = ServiceTemplateManagement.getAvailableTemplate(application);
+
+		if ( doc == null ) {
+			throw new NoSuchTemplateException("Could not find template for application: "+application+".");
+		}
+
+		return doc;
+	}
+
+	public Document getTemplate(String application, String version)
+	throws NoSuchTemplateException {
+		Document doc = ServiceTemplateManagement.getAvailableTemplate(application);
+
+		if ( doc == null ) {
+			throw new NoSuchTemplateException("Could not find template for application: "+application+", version "+version);
+		}
+
+		return doc;
+
+	}
+
+	public String[] listHostedApplicationTemplates() {
+		return ServiceTemplateManagement.getAllAvailableApplications();
+	}
+
+	public void login(String username, char[] password)
+	throws NoValidCredentialException {
+
+		try {
+			LocalTemplatesHelper.copyTemplatesAndMaybeGlobusFolder();
+			VomsesFiles.copyVomses();
+			CertificateFiles.copyCACerts(false);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.myproxy_username = username;
+		this.passphrase = password;
+	}
+
+	public String logout() {
+		Arrays.fill(passphrase, 'x');
+		return null;
 	}
 
 }

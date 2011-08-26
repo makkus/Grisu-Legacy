@@ -10,14 +10,14 @@
 	<description>Grisu is an open source framework to help grid admins and developers to support end users in a grid environment. Grisu publishes an easy-to-use service interface which by default sits behind a web service. This service interface contains a set of methods that are usually needed to submit jobs to the grid, including providing information about the grid and the staging of input/output files from/to the users desktop. </description>
 	<url>http://maven.apache.org</url>
 
-<!--	<repositories>-->
-<!--		<repository>-->
-<!--			<id>vpac</id>-->
-<!--			<url>http://hudson.vpac.org/maven_repository</url>-->
-<!--		</repository>-->
-<!--	</repositories>-->
+	<!-- <repositories> -->
+	<!-- <repository> -->
+	<!-- <id>vpac</id> -->
+	<!-- <url>http://hudson.vpac.org/maven_repository</url> -->
+	<!-- </repository> -->
+	<!-- </repositories> -->
 
-  <repositories>
+	<repositories>
 		<repository>
 			<id>ARCS</id>
 			<url>http://code.arcs.org.au/nexus/content/groups/public</url>
@@ -26,8 +26,8 @@
 			<id>ARCS Snapshots</id>
 			<url>http://code.arcs.org.au/nexus/content/groups/public-snapshots</url>
 		</repository>
-		
-				<repository>
+
+		<repository>
 			<id>releases</id>
 			<url>http://code.ceres.auckland.ac.nz/nexus/content/groups/public/</url>
 			<releases>
@@ -57,6 +57,19 @@
 			</snapshots>
 		</repository>
 	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<name>BeSTGRID Releases Repository</name>
+			<id>bestgrid.release</id>
+			<url>http://code.ceres.auckland.ac.nz/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>bestgrid.snapshot</id>
+			<name>BeSTGRID Snapshots Repository</name>
+			<url>http://code.ceres.auckland.ac.nz/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 
 	<issueManagement>
@@ -95,14 +108,15 @@
 		</contributor>
 	</contributors>
 	<scm>
-		<developerConnection>https://projects.arcs.org.au/svn/grisu/trunk/grisu</developerConnection>
-		<url>https://projects.arcs.org.au/svn/grisu/trunk/grisu</url>
+		<connection>scm:git:git://github.com/makkus/Grisu-Legacy.git</connection>
+		<developerConnection>scm:git:git@github.com:makkus/Grisu-Legacy.git</developerConnection>
+		<url>https://github.com/makkus/Grisu-Legacy</url>
 	</scm>
 	<organization>
 		<name>ARCS</name>
 		<url>http://www.arcs.org.au</url>
 	</organization>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -111,9 +125,9 @@
 
 					<descriptors>
 						<descriptor>grisu-client-swing.assembly.xml</descriptor>
-<!--						<descriptor>gricli.assembly.xml</descriptor>-->
+						<!-- <descriptor>gricli.assembly.xml</descriptor> -->
 						<descriptor>grisu-local-backend.assembly.xml</descriptor>
-<!--						<descriptor>grisu-client-batch.assembly.xml</descriptor>-->
+						<!-- <descriptor>grisu-client-batch.assembly.xml</descriptor> -->
 					</descriptors>
 
 				</configuration>
